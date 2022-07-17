@@ -1,11 +1,14 @@
 # TianXiang_srp
 ## Online learning status supervising system development by Tian Xiang in SCUT from 2022.4 to 2023.3
-1. Concentration Analysis developed by .
-2. Emotion Recognition developed by .
-3. Fatigue Analysis developed by .
-4. Posture Analysis developed by .
+1. Concentration Analysis developed by Chang Peng,  Liu Xiaochen.
+2. Emotion Recognition developed by Zhong Chulong, Pan Wenjie.
+3. Fatigue Analysis developed by He Xie, Shi Qinger.
+4. Posture Analysis developed by Wang Xunlei.
 5. Application Development developed by .
 ---
 ## collaborators resume
 * zcl-huazhou--zhongchulong account
-* zcl
+* Ces0bon--panwenjie account
+* Fancilia--changpeng account
+* DThund--wangxunlei account
+* SQE2022--shiqinger account
