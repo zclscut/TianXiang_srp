@@ -5,15 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efe404c3-33d8-42be-a8fd-d65c67eb30fa" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/tianxiang_srp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/tianxiang_srp.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/EmotionRecognition/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/EmotionRecognition/video_detectface.py" beforeDir="false" afterPath="$PROJECT_DIR$/EmotionRecognition/video_detectface.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -124,7 +129,7 @@
       <option name="presentableId" value="Default" />
       <updated>1658133692551</updated>
       <workItem from="1658133697632" duration="196000" />
-      <workItem from="1658133908391" duration="3163000" />
+      <workItem from="1658133908391" duration="4446000" />
     </task>
     <servers />
   </component>

@@ -45,12 +45,9 @@ if __name__ =='__main__':
         flag,frame=cap.read()
         if not flag:
             break
-
-
-
         cv.imshow('face',frame)
         key=cv.waitKey(1000//24)
         if key==27:#ESC的ASCII码
             break
-    cv.destroyAllWindows()
+        cv.destroyAllWindows()
     cap.release()
