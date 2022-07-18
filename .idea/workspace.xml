@@ -45,7 +45,7 @@
     "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable"
   }
 }]]></component>
-  <component name="RunManager" selected="Python.cam_detect_faces">
+  <component name="RunManager" selected="Python.emotion1">
     <configuration name="cam_detect_faces" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="tianxiang_srp" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -112,10 +112,33 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="video_detectface" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="tianxiang_srp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/EmotionRecognition" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/EmotionRecognition/video_detectface.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.cam_detect_faces" />
         <item itemvalue="Python.emotion1" />
+        <item itemvalue="Python.video_detectface" />
+        <item itemvalue="Python.cam_detect_faces" />
         <item itemvalue="Python.tensorflowtest" />
       </list>
     </recent_temporary>
@@ -129,7 +152,7 @@
       <option name="presentableId" value="Default" />
       <updated>1658133692551</updated>
       <workItem from="1658133697632" duration="196000" />
-      <workItem from="1658133908391" duration="4446000" />
+      <workItem from="1658133908391" duration="9978000" />
     </task>
     <servers />
   </component>
@@ -139,6 +162,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/tianxiang_srp$tensorflowtest.coverage" NAME="tensorflowtest Coverage Results" MODIFIED="1658134669555" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../Tensorflow" />
     <SUITE FILE_PATH="coverage/tianxiang_srp$cam_detect_faces.coverage" NAME="cam_detect_faces Coverage Results" MODIFIED="1658137065879" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EmotionRecognition" />
-    <SUITE FILE_PATH="coverage/tianxiang_srp$emotion1.coverage" NAME="emotion1 Coverage Results" MODIFIED="1658137025429" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Windows Folders/桌面/eP1_FaceRecognitionFinal - Joydip Dutta.zip" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$emotion1.coverage" NAME="emotion1 Coverage Results" MODIFIED="1658161924211" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../../Windows Folders/桌面/eP1_FaceRecognitionFinal - Joydip Dutta.zip" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$video_detectface.coverage" NAME="video_detectface Coverage Results" MODIFIED="1658161737469" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EmotionRecognition" />
   </component>
 </project>
