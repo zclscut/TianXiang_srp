@@ -7,14 +7,14 @@ from tensorflow.keras.preprocessing.image import img_to_array
 
 
 model=Sequential()#创建神经网络模型，准备调用.h5文件
-classifier=load_model('neuralnetwork.h5')#调用.h5文件,该神经网络能输出6类情绪
+classifier=load_model('../lib/neuralnetwork.h5')#调用.h5文件,该神经网络能输出6类情绪
 
 #神经网络输出数字标签，需查字典得到情绪类别
 class_labels={0:'Angry',1:'Fear',2:'Happy',3:'Neutral',4:'Sad',5:'Surprise'}
 classes=list(class_labels.values())
 
 #所有函数公用对象，识别人脸分类器
-face_detector = cv.CascadeClassifier('haarcascade_frontalface_alt.xml ')
+face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
 
 #在框外用文字输出情绪
 def text_on_detected_boxes(text,text_x,text_y,image,font_scale = 1,
@@ -110,7 +110,7 @@ def emotion_video(cap):
             cv.putText(image, "No Face Found", (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
         cv.imshow('All', image)
-        if cv.waitKey(1)  == 27:#ESC的ASCII码
+        if cv.waitKey(1)  == 27 or cv.getWindowProperty("all",cv.WND_PROP_AUTOSIZE) != 1:#ESC的ASCII码
             break
     cap.release()
     cv.destroyAllWindows()
