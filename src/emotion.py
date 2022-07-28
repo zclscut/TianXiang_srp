@@ -10,8 +10,8 @@ model=Sequential()#创建神经网络模型，准备调用.h5文件
 classifier=load_model('../lib/neuralnetwork.h5')#调用.h5文件,该神经网络能输出6类情绪
 
 #神经网络输出数字标签，需查字典得到情绪类别
-class_labels={0:'Angry',1:'Fear',2:'Happy',3:'Neutral',4:'Sad',5:'Surprise'}
-classes=list(class_labels.values())
+emotion_dic={0:'Angry',1:'Fear',2:'Happy',3:'Neutral',4:'Sad',5:'Surprise'}
+classes=list(emotion_dic.values())
 
 #所有函数公用对象，识别人脸分类器
 face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
@@ -64,7 +64,7 @@ def emotion_image(image_path):
 
         # 调用神经网络预测，用输出的数字标签查询字典，得到情绪的称呼
         preds = classifier.predict(roi)[0]
-        label = class_labels[preds.argmax()]
+        label = emotion_dic[preds.argmax()]
         label_position = (rects[i][0] + int((rects[i][1] / 2)), abs(rects[i][2] - 10))
         i = + 1
 
@@ -102,7 +102,7 @@ def emotion_video(cap):
 
             # 调用神经网络预测，用输出的数字标签查询字典，得到情绪的称呼
             preds = classifier.predict(roi)[0]
-            label = class_labels[preds.argmax()]
+            label = emotion_dic[preds.argmax()]
             label_position = (rect[0] + rect[1]//50, rect[2] + rect[3]//50)
             text_on_detected_boxes(label, label_position[0], label_position[1], image) # 将情绪文字标注在方框外，对image进行修饰
             fps = cap.get(cv.CAP_PROP_FPS)#获取视频帧率
@@ -117,8 +117,9 @@ def emotion_video(cap):
     cv.destroyAllWindows()
 
 
-def emotionFrameDetect(frame):
+def emotionFrameDetect(frame,photo):
     rect, face, image = face_detector_video(frame)
+    emoFlag=0
     if np.sum([face]) != 0.0:
         roi = face.astype("float") / 255.0
         roi = img_to_array(roi)
@@ -126,7 +127,8 @@ def emotionFrameDetect(frame):
 
         # 调用神经网络预测，用输出的数字标签查询字典，得到情绪的称呼
         preds = classifier.predict(roi)[0]
-        label = class_labels[preds.argmax()]
+        emoFlag=preds.argmax()
+        label = emotion_dic[emoFlag]
         label_position = (rect[0] + rect[1] // 50, rect[2] + rect[3] // 50)
         text_on_detected_boxes(label, label_position[0], label_position[1], image)  # 将情绪文字标注在方框外，对image进行修饰
         #fps = cap.get(cv.CAP_PROP_FPS)
@@ -135,7 +137,7 @@ def emotionFrameDetect(frame):
         cv.putText(image, str(fps), (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     else:
         cv.putText(image, "No Face Found", (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-    return image
+    return emoFlag, image
 
 if __name__ =='__main__':
     camera=cv.VideoCapture(0)#打开摄像头

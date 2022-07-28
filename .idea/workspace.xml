@@ -5,9 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efe404c3-33d8-42be-a8fd-d65c67eb30fa" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/concentration.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/fatigue.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/posture.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FatigueAnalysis/cam_detect_faces.py" beforeDir="false" afterPath="$PROJECT_DIR$/FatigueAnalysis/cam_detect_faces.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/emotion.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/emotion.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/video_detect_face.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/emotion.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -187,7 +191,9 @@
       <workItem from="1658133908391" duration="9978000" />
       <workItem from="1658162264613" duration="320000" />
       <workItem from="1658206113797" duration="338000" />
-      <workItem from="1658933864345" duration="3255000" />
+      <workItem from="1658933864345" duration="3817000" />
+      <workItem from="1658978917962" duration="266000" />
+      <workItem from="1659021245160" duration="6910000" />
     </task>
     <servers />
   </component>
@@ -206,7 +212,7 @@
     </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/tianxiang_srp$main.coverage" NAME="main Coverage Results" MODIFIED="1658938152254" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$main.coverage" NAME="main Coverage Results" MODIFIED="1659028165024" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/tianxiang_srp$video_detect_face.coverage" NAME="video_detect_face Coverage Results" MODIFIED="1658934089009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EmotionRecognition" />
   </component>
 </project>

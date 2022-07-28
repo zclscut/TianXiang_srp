@@ -9,7 +9,7 @@ if __name__ =='__main__':
     cv.resizeWindow('face',800,500)
 
     cap=cv.VideoCapture(0)
-    face_detector=cv.CascadeClassifier('haarcascade_frontalface_alt.xml ')
+    face_detector=cv.CascadeClassifier('../images/haarcascade_frontalface_alt.xml ')
     while True:
         flag,frame=cap.read()
         if not flag:
