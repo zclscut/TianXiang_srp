@@ -74,7 +74,7 @@ def emotion_image(image_path):
     cv.imshow("Emotion Detector", image)
     cv.waitKey(0)
     cv.destroyAllWindows()
-def face_detector_video(img):
+def faceDetectorVideo(img):
     # Convert image to grayscale
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     t = time.time()#测试执行时间
@@ -99,7 +99,7 @@ def emotion_video(cap):
     while True:
         ret, frame = cap.read()
 
-        rect, face, image = face_detector_video(frame)
+        rect, face, image = faceDetectorVideo(frame)
 
         if np.sum([face]) != 0.0:
             #t = time.time()#测试调用神经网络模型预测时间平均60ms
@@ -128,10 +128,7 @@ def emotion_video(cap):
     cv.destroyAllWindows()
 
 
-def emotionFrameDetect(frame,photo):
-    #t = time.time()#测试执行时间
-    rect, face, image = face_detector_video(frame)
-    #tt = time.time()#测试执行时间
+def emotionFrameDetect(rect,face,image,photo):
     emoFlag=0
     if np.sum([face]) != 0.0:
         roi = face.astype("float") / 255.0#归一化

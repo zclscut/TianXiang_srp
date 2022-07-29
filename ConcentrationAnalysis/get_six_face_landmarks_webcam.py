@@ -19,8 +19,10 @@ def get_six_points():
         # 人脸检测
 
         faces = detector(gray, 1)  # 1:将图片放大一倍，便于识别人脸; 0 原始图像
+        print(faces)
         #t = time.time()  # 测试执行时间
         for face in faces:
+            #print(face)
             points_lst = []  # 存放68个点
             # landmarks 为二维数组
             landmarks = np.matrix([[point.x, point.y] for point in predictor(gray, face).parts()])
