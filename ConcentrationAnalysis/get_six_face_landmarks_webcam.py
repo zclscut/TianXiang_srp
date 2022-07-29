@@ -1,4 +1,5 @@
 import dlib
+import time
 import numpy as np
 import cv2
 
@@ -16,7 +17,9 @@ def get_six_points():
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # 灰度处理
 
         # 人脸检测
+
         faces = detector(gray, 1)  # 1:将图片放大一倍，便于识别人脸; 0 原始图像
+        #t = time.time()  # 测试执行时间
         for face in faces:
             points_lst = []  # 存放68个点
             # landmarks 为二维数组
@@ -42,7 +45,7 @@ def get_six_points():
                 points_lst[8],  # 下巴
             ]
             six_points=np.array(six_points_lst,dtype="double")
-            print('six_points',six_points)
+            #print('six_points',six_points)
             model_points = np.array([
                 (0.0, 0.0, 0.0),  # Nose tip
                 (0.0, -330.0, -65.0),  # Chin
@@ -52,10 +55,11 @@ def get_six_points():
                 (150.0, -150.0, -125.0)  # Right mouth corner
             ])
             # print('model_points',model_points)
-
-        cv2.imshow('frame', frame)
+        #整个代码处理一帧360ms，几乎全部消耗于detector(gray, 1)，zcl注
+        #print(time.time()-t)#测试执行时间
+        cv2.imshow('all', frame)
         k = cv2.waitKey(5)
-        if k == 27:  # ESC的ASCII码
+        if k == 27 or cv2.getWindowProperty("all",cv2.WND_PROP_AUTOSIZE) != 1:  # ESC的ASCII码，或者×关闭窗口,zcl改
             break
 
 if __name__ == '__main__':

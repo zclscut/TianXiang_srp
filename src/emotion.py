@@ -40,7 +40,7 @@ def face_detector_image(frame):
     if faces == ():
         return (0,0,0,0),np.zeros((48,48),np.uint8),frame
     #检测到人脸，用(0,0,255)红色方框框出来
-    for x, y, w, h in faces:
+    for (x, y, w, h) in faces:
         cv.rectangle(frame, pt1=(x, y),
                      pt2=(x + w, y + h),
                      color=[0, 0, 255],
@@ -77,7 +77,11 @@ def emotion_image(image_path):
 def face_detector_video(img):
     # Convert image to grayscale
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-    faces = face_detector.detectMultiScale(gray, 1.1, 10)
+    t = time.time()#测试执行时间
+    faces = face_detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=10)
+    #caleFactor=1.1, minNeighbors=10执行时间110ms
+    #caleFactor=1.3, minNeighbors=10执行时间40ms
+    print(time.time() - t)#测试执行时间
     # 没检测到人脸
     if faces == ():
         return (0, 0, 0, 0), np.zeros((48, 48), np.uint8), img
@@ -94,34 +98,43 @@ def face_detector_video(img):
 def emotion_video(cap):
     while True:
         ret, frame = cap.read()
+
         rect, face, image = face_detector_video(frame)
+
         if np.sum([face]) != 0.0:
+            #t = time.time()#测试调用神经网络模型预测时间平均60ms
             roi = face.astype("float") / 255.0
             roi = img_to_array(roi)
             roi = np.expand_dims(roi, axis=0)#把灰度图转化为narray数组，作为神经网络的输入
 
             # 调用神经网络预测，用输出的数字标签查询字典，得到情绪的称呼
+
             preds = classifier.predict(roi)[0]
+
             label = emotion_dic[preds.argmax()]
             label_position = (rect[0] + rect[1]//50, rect[2] + rect[3]//50)
             text_on_detected_boxes(label, label_position[0], label_position[1], image) # 将情绪文字标注在方框外，对image进行修饰
             fps = cap.get(cv.CAP_PROP_FPS)#获取视频帧率
             cv.putText(image, str(fps),(5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            #print(1.0 / (time.time() - t))#测试调用神经网络模型预测时间平均60ms
         else:
             cv.putText(image, "No Face Found", (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
-        cv.imshow('All', image)
-        if cv.waitKey(1)  == 27 or cv.getWindowProperty("all",cv.WND_PROP_AUTOSIZE) != 1:#ESC的ASCII码
+        cv.imshow('all', image)
+        if cv.waitKey(1) == 27 or cv.getWindowProperty("all",cv.WND_PROP_AUTOSIZE) != 1:#ESC的ASCII码
             break
+
     cap.release()
     cv.destroyAllWindows()
 
 
 def emotionFrameDetect(frame,photo):
+    #t = time.time()#测试执行时间
     rect, face, image = face_detector_video(frame)
+    #tt = time.time()#测试执行时间
     emoFlag=0
     if np.sum([face]) != 0.0:
-        roi = face.astype("float") / 255.0
+        roi = face.astype("float") / 255.0#归一化
         roi = img_to_array(roi)
         roi = np.expand_dims(roi, axis=0)  # 把灰度图转化为narray数组，作为神经网络的输入
 
@@ -137,6 +150,7 @@ def emotionFrameDetect(frame,photo):
         cv.putText(image, str(fps), (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     else:
         cv.putText(image, "No Face Found", (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+
     return emoFlag, image
 
 if __name__ =='__main__':

@@ -1,9 +1,11 @@
 import numpy as np
 import cv2 as cv
+import time
 from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetect as posture_detect
 from concentration import concentrationFrameDetect as concentration_detect
 from fatigue import fatigueFrameDetect as fatigue_detect
+
 # 定义常数
 # 初始化帧计数器和眨眼总数
 eyeCounter = 0
@@ -32,13 +34,18 @@ isPosture=0
 if __name__ =='__main__':
     camera=cv.VideoCapture(0)#打开摄像头
     while True:
+
         ret, frame = camera.read()
+        #t = time.time()#测试模块执行时间
         emoFlag,photo=emotion_detect(frame,frame)#输入一帧原始图片，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片frame
+        #print(1.0 / (time.time() - t))  # 测试模块执行时间
         #print(emoFlag)
-        isFatigue, photo = emotion_detect(frame, photo)
-        isPosture, photo = emotion_detect(frame, photo)
-        isFocus, photo = emotion_detect(frame, photo)
+        isFatigue, photo = fatigue_detect(frame, photo)
+        isPosture, photo = posture_detect(frame, photo)
+        isFocus, photo = concentration_detect(frame, photo)
+
         #print(camera.get(cv.CAP_PROP_FPS))
+
         cv.imshow('all', photo)
         if cv.waitKey(1) == 27 or cv.getWindowProperty("all",cv.WND_PROP_AUTOSIZE) != 1:  # ESC的ASCII码
             break
