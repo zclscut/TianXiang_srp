@@ -62,56 +62,38 @@ def concentrationFrameDetect(faces,gray, photo):#frame为摄像头原图，photo
     frame=photo
     try:
         t0 = time.time()
-        bboxes = face_boxes(frame)
-        print(f'检测到{len(bboxes)}张脸 ')
+        bboxes = face_boxes(frame)  # 每一帧中脸部数据构成的ndarry
+        # print(f'检测到{len(bboxes)}张脸 ')
 
         # 计算欧拉角
         param_lst, roi_box_lst = tddfa(frame, np.array([bboxes[-1]]))  # 只计算左边第一张脸
-        ver_lst = tddfa.recon_vers(param_lst, roi_box_lst)
-        euler_angle_lst, directions_lst, landmarks_lst = estimate_head_pose(ver_lst, True)
+        landmarks_lst = tddfa.recon_vers(param_lst, roi_box_lst) # landmarks_lst为所有人脸的68点3D坐标
+        euler_angle_lst, directions_lst, landmarks_lst = estimate_head_pose(landmarks_lst, True)
+
         t1 = time.time()
 
         roll, yaw, pitch = euler_angle_lst[-1]  # 选取左边第一张脸
-        # print(f'roll: {roll}, yaw: {yaw}, pitch: {round(pitch)} cost time: {round((t1 - t0) * 1000,2)}ms')
+        # print(f'roll: {roll}, yaw: {yaw}, pitch: {round(pitch)} cost time: {round((t1 - t0) * 1000, 2)}ms')
         cv2.putText(frame, f'pitch: {round(pitch, 2)}', (20, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=0.8, color=(0, 0, 255), thickness=2)
         cv2.putText(frame, f'yaw: {round(yaw, 2)}', (20, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=0.8, color=(0, 0, 255), thickness=2)
         cv2.putText(frame, f'roll: {round(roll, 2)}', (20, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=0.8, color=(0, 0, 255), thickness=2)
-
         # 添加轴
         modified_frame = draw_pose(
             frame,
             directions_lst,
             np.array([bboxes[-1]]),
             landmarks_lst, )
-    except: #没有检测到人脸时候返回错误图片
-        error_img=cv2.imread('../images/error.png')
-        return error_img
+
+    except:    # 未检测到人脸时候返回原始图片
+        focus_grade = None # 未检测到人脸时候专注等级
+        return focus_grade,frame
     else:
-        return modified_frame
+        focus_grade = None # 检测到人脸时候专注等级
+        return focus_grade,modified_frame
 
 if __name__ == '__main__':
     pass
-    # cap = cv2.VideoCapture(0)
-    # run_time_lst = []
-    # while True:
-    #     ret, frame = cap.read()
-    #     if ret:
-    #         t3 = time.time()
-    #         gray=None
-    #         faces=None
-    #         # 显示
-    #         cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
-    #         cv2.imshow('frame', concentrationFrameDetect(faces,gray,photo=frame))
-    #         k = cv2.waitKey(1)
-    #         t4 = time.time()
-    #         run_time_lst.append(t4 - t3)
-    #         print(f'total_time: {round((t4 - t3) * 1000, 2)}ms')
-    #         if k == 27:
-    #             break
-    #     else:
-    #         print('读取出错')
-    # ave_time = (sum(run_time_lst) / len(run_time_lst)) * 1000
-    # print('平均运行时间为: {}ms'.format(ave_time))
+

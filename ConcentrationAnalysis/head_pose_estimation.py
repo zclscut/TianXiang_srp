@@ -1,7 +1,7 @@
 import time
 import cv2
 import numpy as np
-from pose_functions import estimate_head_pose
+from head_pose_functions import estimate_head_pose
 
 
 # 模型初始化
@@ -58,50 +58,57 @@ def draw_pose(img, directions_lst, bound_box_lst, landmarks_lst, show_bbox=False
     return img
 
 
-def main():
-    frame_path = r'../images/roll_left.png'  # 等待处理的帧(图片)数据
-    frame = cv2.imread(frame_path, 1)
+def main(frame):
+    try:
+        t0 = time.time()
+        bboxes = face_boxes(frame)  # 每一帧中脸部数据构成的ndarry
+        # print(f'检测到{len(bboxes)}张脸 ')
 
-    t0 = time.time()
-    bboxes = face_boxes(frame)
-    print(f'检测到{len(bboxes)}张脸 ')
+        # 计算欧拉角
+        param_lst, roi_box_lst = tddfa(frame, np.array([bboxes[-1]]))  # 只计算左边第一张脸
+        landmarks_lst = tddfa.recon_vers(param_lst, roi_box_lst) # landmarks_lst为所有人脸的68点3D坐标
+        euler_angle_lst, directions_lst, landmarks_lst = estimate_head_pose(landmarks_lst, True)
 
-    # 计算欧拉角
+        t1 = time.time()
 
-    param_lst, roi_box_lst = tddfa(frame, np.array([bboxes[-1]]))  # 只计算左边第一张脸
-    ver_lst = tddfa.recon_vers(param_lst, roi_box_lst)
-    euler_angle_lst, directions_lst, landmarks_lst = estimate_head_pose(ver_lst, True)
-    t1 = time.time()
+        roll, yaw, pitch = euler_angle_lst[-1]  # 选取左边第一张脸
+        print(f'roll: {round(roll, 2)}, yaw: {round(yaw, 2)}, pitch: {round(pitch, 2)} cost time: {round((t1 - t0) * 1000, 2)}ms')
 
-    roll, yaw, pitch = euler_angle_lst[-1]  # 选取左边第一张脸
-    print(f'roll: {roll}, yaw: {yaw}, pitch: {round(pitch)} cost time: {round((t1-t0)*1000),2}ms')
-    cv2.putText(frame, f'pitch: {round(pitch, 2)}', (20, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=0.8, color=(0, 0, 255), thickness=2)
-    cv2.putText(frame, f'yaw: {round(yaw, 2)}', (20, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=0.8, color=(0, 0, 255), thickness=2)
-    cv2.putText(frame, f'roll: {round(roll, 2)}', (20, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=0.8, color=(0, 0, 255), thickness=2)
+        # 添加文字信息
+        cv2.putText(frame, f'{len(bboxes)}face(s) detected ', (20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.8, color=(255, 0, 0), thickness=2)
+        cv2.putText(frame, f'pitch: {round(pitch, 2)}', (20, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.8, color=(0, 0, 255), thickness=2)
+        cv2.putText(frame, f'yaw: {round(yaw, 2)}', (20, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.8, color=(0, 0, 255), thickness=2)
+        cv2.putText(frame, f'roll: {round(roll, 2)}', (20, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.8, color=(0, 0, 255), thickness=2)
+        # 添加轴
+        modified_frame = draw_pose(
+            frame,
+            directions_lst,
+            np.array([bboxes[-1]]),
+            landmarks_lst, )
 
-    # 添加轴
-    show_img = draw_pose(
-        frame,
-        directions_lst,
-        np.array([bboxes[-1]]),
-        landmarks_lst,)
-    output_path = frame_path[:-4] + '_out.png'
-    cv2.imwrite(output_path, show_img)
+    except:    # 没有检测到人脸时候返回原始图片
+        pitch, yaw, roll=0, 0, 0
+        return frame,pitch, yaw,roll
+    else:
+        return modified_frame, pitch, yaw,roll
 
-    # # 显示
-    # cv2.namedWindow('image', cv2.WINDOW_AUTOSIZE)
-    # cv2.imshow('image', show_img)
-    # k = cv2.waitKey(0)
-    # if k == 27:
-    #     cv2.destroyWindow('image')
+
 
 if __name__ == "__main__":
     t3=time.time()
-    main()
+    frame=cv2.imread('../images/euler_angle_test.png')
+    modified_frame, pitch, yaw,roll=main(frame)
+
+    #显示
+    cv2.namedWindow('Frame',cv2.WINDOW_NORMAL)
+    cv2.imshow('Frame',modified_frame)
     t4=time.time()
-    print(f'total_time: {round((t4-t3)*1000,2)}ms')
+    print(f'total_cost_time: {round((t4-t3)*1000,2)}ms')
+    if cv2.waitKey(0)==27:
+        cv2.destroyAllWindows()
 
 

@@ -5,7 +5,7 @@ import numpy as np
 
 def get_euler_angles_from_rotation_matrix(matrix_lst):
     """
-    根据旋转矩阵获取欧拉角
+    根据旋转矩阵(rotation_matrix)获取欧拉角(euler_angle)
     Args:
         matrix_lst: 列表形式的旋转矩阵
     return: 
@@ -22,18 +22,18 @@ def get_euler_angles_from_rotation_matrix(matrix_lst):
         m22 = matrix[2][2]
 
         if m10 > 0.998:
-            bank = 0
-            attitude = np.pi/2
-            heading = np.arctan2(m02, m22)
+            roll = 0
+            pitch = np.pi/2
+            yaw = np.arctan2(m02, m22)
         elif m10 < -0.998:
-            bank = 0
-            attitude = -np.pi/2
-            heading = np.arctan2(m02, m22)
+            roll = 0
+            pitch = -np.pi/2
+            yaw = np.arctan2(m02, m22)
         else:
-            bank = np.arctan2(-m12, m11)
-            attitude = np.arcsin(m10)
-            heading = np.arctan2(-m20, m00)
-        euler_angles_lst.append(np.rad2deg(np.array([attitude, heading, bank])))
+            roll = np.arctan2(-m12, m11)
+            pitch = np.arcsin(m10)
+            yaw = np.arctan2(-m20, m00)
+        euler_angles_lst.append(np.rad2deg(np.array([pitch, yaw, roll])))
     return  np.array(euler_angles_lst)
 
 
@@ -122,7 +122,7 @@ def estimate_head_pose(landmarks_lst: np.ndarray, debug=False) -> np.ndarray:
         landmarks_lst: 脸部的3D特征点
         debug: if true, return detail information.
     Returns:
-        脸部的yaw, pitch, roll
+        头部的yaw, pitch, roll
     """
     directions_lst = get_direction_from_landmarks(landmarks_lst)
     rotation_matrix_lst = estimate_best_rotation(directions_lst)

@@ -61,25 +61,28 @@ def draw_pose(img, directions_lst, bound_box_lst, landmarks_lst, show_bbox=False
 def main(frame):
     try:
         t0 = time.time()
-        bboxes = face_boxes(frame) #每一帧中脸部数据构成的ndarry
-        print(f'检测到{len(bboxes)}张脸 ')
+        bboxes = face_boxes(frame)  # 每一帧中脸部数据构成的ndarry
+        # print(f'检测到{len(bboxes)}张脸 ')
 
         # 计算欧拉角
         param_lst, roi_box_lst = tddfa(frame, np.array([bboxes[-1]]))  # 只计算左边第一张脸
-        ver_lst = tddfa.recon_vers(param_lst, roi_box_lst)
-        euler_angle_lst, directions_lst, landmarks_lst = estimate_head_pose(ver_lst, True)
+        landmarks_lst = tddfa.recon_vers(param_lst, roi_box_lst) # landmarks_lst为所有人脸的68点3D坐标
+        euler_angle_lst, directions_lst, landmarks_lst = estimate_head_pose(landmarks_lst, True)
 
         t1 = time.time()
 
         roll, yaw, pitch = euler_angle_lst[-1]  # 选取左边第一张脸
-        print(f'roll: {roll}, yaw: {yaw}, pitch: {round(pitch)} cost time: {round((t1 - t0) * 1000,2)}ms')
+        # print(f'roll: {round(roll, 2)}, yaw: {round(yaw, 2)}, pitch: {round(pitch,2)} cost time: {round((t1 - t0) * 1000, 2)}ms')
+
+        # 添加文字信息
+        cv2.putText(frame, f'{len(bboxes)}face(s) detected ', (20, 50), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                    fontScale=0.8, color=(255, 0, 0), thickness=2)
         cv2.putText(frame, f'pitch: {round(pitch, 2)}', (20, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=0.8, color=(0, 0, 255), thickness=2)
         cv2.putText(frame, f'yaw: {round(yaw, 2)}', (20, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=0.8, color=(0, 0, 255), thickness=2)
         cv2.putText(frame, f'roll: {round(roll, 2)}', (20, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                     fontScale=0.8, color=(0, 0, 255), thickness=2)
-
         # 添加轴
         modified_frame = draw_pose(
             frame,
@@ -87,10 +90,9 @@ def main(frame):
             np.array([bboxes[-1]]),
             landmarks_lst, )
 
-    except:    # 没有检测到人脸时候返回错误图片
-        error_img=cv2.imread('../images/error.png')
-        pitch, yaw, roll=0, 0, 180
-        return error_img,pitch, yaw,roll
+    except:    # 没有检测到人脸时候返回原始图片
+        pitch, yaw, roll=0, 0, 0
+        return frame,pitch, yaw,roll
     else:
         return modified_frame, pitch, yaw,roll
 
@@ -107,7 +109,7 @@ if __name__ == "__main__":
         t3 = time.time()
         ret,frame=cap.read() # 读取一帧
         modified_frame, pitch, yaw, roll = main(frame)
-        if roll!=180:
+        if ret:
             # 显示
             cv2.namedWindow('frame', cv2.WINDOW_NORMAL)
             cv2.imshow('frame', modified_frame)
@@ -121,14 +123,13 @@ if __name__ == "__main__":
             # print(f'total_time: {round((t4 - t3) * 1000, 2)}ms')
 
             if cv2.waitKey(1)  == 27: #按下ESC键退出
+                ave_time = (sum(run_time_lst) / len(run_time_lst)) * 1000
+                print('平均运行时间为: {:.2f}ms'.format(ave_time))
+                print('pitch最大值{:.2f},pitch最小值{:.2f}'.format(max(pitch_lst), min(pitch_lst)))
+                print('yaw最大值{:.2f},yaw最小值{:.2f}'.format(max(yaw_lst), min(yaw_lst)))
+                print('roll最大值{:.2f},roll最小值{:.2f}'.format(max(roll_lst), min(roll_lst)))
                 break
         else:
-            print('读取出错')
-            ave_time = (sum(run_time_lst) / len(run_time_lst)) * 1000
-            print('平均运行时间为: {}ms'.format(ave_time))
-            print('pitch最大值{},pitch最小值{}'.format(max(pitch_lst), min(pitch_lst)))
-            print('yaw最大值{},yaw最小值{}'.format(max(yaw_lst), min(yaw_lst)))
-            print('roll最大值{},roll最小值{}'.format(max(roll_lst), min(roll_lst)))
             break
 
 
