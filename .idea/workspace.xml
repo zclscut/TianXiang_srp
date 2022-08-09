@@ -5,12 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="efe404c3-33d8-42be-a8fd-d65c67eb30fa" name="Changes" comment="">
+<<<<<<< Updated upstream
       <change afterPath="$PROJECT_DIR$/ConcentrationAnalysis/get_focus_grade.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/ConcentrationAnalysis/get_weight_from_AHP.py" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/PostureAnalysis/Posture_project.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/concentration.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/concentration.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.py" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ConcentrationAnalysis/get_six_face_landmarks_webcam.py" beforeDir="false" afterPath="$PROJECT_DIR$/ConcentrationAnalysis/get_six_face_landmarks_webcam.py" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +48,11 @@
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+<<<<<<< Updated upstream
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Chang Peng/Desktop/OpenCV/TianXiang_srp&quot;,
+=======
+    &quot;last_opened_file_path&quot;: &quot;D:/pythoncode/tianxiang_srp/lib&quot;,
+>>>>>>> Stashed changes
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -173,8 +182,15 @@
         <item itemvalue="Python.data_test" />
         <item itemvalue="Python.main1" />
         <item itemvalue="Python.main" />
+<<<<<<< Updated upstream
         <item itemvalue="Python.新建文本文档" />
         <item itemvalue="Python.get_weight_from_AHP (1)" />
+=======
+        <item itemvalue="Python.emotion" />
+        <item itemvalue="Python.get_six_face_landmarks_webcam" />
+        <item itemvalue="Python.get_six_face_landmarks_frame" />
+        <item itemvalue="Python.emotion (1)" />
+>>>>>>> Stashed changes
       </list>
     </recent_temporary>
   </component>
@@ -193,7 +209,10 @@
       <workItem from="1658933864345" duration="3817000" />
       <workItem from="1658978917962" duration="266000" />
       <workItem from="1659021245160" duration="6910000" />
-      <workItem from="1659061677807" duration="16507000" />
+      <workItem from="1659061677807" duration="17704000" />
+      <workItem from="1659096320492" duration="738000" />
+      <workItem from="1659104026782" duration="1175000" />
+      <workItem from="1659144316789" duration="3652000" />
     </task>
     <servers />
   </component>
@@ -211,4 +230,15 @@
       </map>
     </option>
   </component>
+<<<<<<< Updated upstream
+=======
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/tianxiang_srp$get_six_face_landmarks_frame.coverage" NAME="get_six_face_landmarks_frame Coverage Results" MODIFIED="1659085525716" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ConcentrationAnalysis" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$main.coverage" NAME="main Coverage Results" MODIFIED="1659145403275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$video_detect_face.coverage" NAME="video_detect_face Coverage Results" MODIFIED="1658934089009" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EmotionRecognition" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$emotion.coverage" NAME="emotion Coverage Results" MODIFIED="1659145389299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/EmotionRecognition" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$emotion__1_.coverage" NAME="emotion (1) Coverage Results" MODIFIED="1659065119189" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/tianxiang_srp$get_six_face_landmarks_webcam.coverage" NAME="get_six_face_landmarks_webcam Coverage Results" MODIFIED="1659086635627" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/ConcentrationAnalysis" />
+  </component>
+>>>>>>> Stashed changes
 </project>
