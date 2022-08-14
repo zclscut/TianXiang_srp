@@ -32,13 +32,14 @@ def findPosition(img, results, draw=True):
     return lmList
 
 # 获取坐标 鼻子 左肩 右肩，强调绘制
-def findAngle(lmList, img, p1, p2, p3, draw=True):
+def findAngle(lmList, img, p1, p2, p3, p4, p5, draw=True):
 
-    # 获取坐标 鼻子 左肩 右肩
+    # 获取坐标 鼻子 左肩 右肩 左眼 左耳
     x1, y1, z1 = lmList[p1][1:]
     x2, y2, z2 = lmList[p2][1:]
     x3, y3, z3 = lmList[p3][1:]
-
+    x4, y4, z4 = lmList[p4][1:]
+    x5, y5, z5 = lmList[p5][1:]
     # 绘制
     if draw:
         cv2.line(img, (x2, y2), (x3, y3), (255, 255, 255), 3)
@@ -48,11 +49,16 @@ def findAngle(lmList, img, p1, p2, p3, draw=True):
         cv2.circle(img, (x2, y2), 15, (0, 0, 255), 2)
         cv2.circle(img, (x3, y3), 10, (0, 0, 255), cv2.FILLED)
         cv2.circle(img, (x3, y3), 15, (0, 0, 255), 2)
-        cv2.putText(img, f'{int(x1), int(y1), int(z1)}', (x1 - 50, y1 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
-        cv2.putText(img, f'{int(x2), int(y2), int(z2)}', (x2 - 50, y2 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
-        cv2.putText(img, f'{int(x3), int(y3), int(z3)}', (x3 - 50, y3 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
-
-    return y1, y2, y3, z1, z2, z3
+        cv2.circle(img, (x4, y4), 10, (0, 0, 255), cv2.FILLED)
+        cv2.circle(img, (x4, y4), 15, (0, 0, 255), 2)
+        cv2.circle(img, (x5, y5), 10, (0, 0, 255), cv2.FILLED)
+        cv2.circle(img, (x5, y5), 15, (0, 0, 255), 2)
+        cv2.putText(img, f'{int(x1), int(y1), int(z1)}', (x1 - 50, y1 - 15), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x2), int(y2), int(z2)}', (x2 - 50, y2 - 15), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x3), int(y3), int(z3)}', (x3 - 50, y3 - 15), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x4), int(y4), int(z4)}', (x4 - 50, y4 - 30), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x5), int(y5), int(z5)}', (x5 - 50, y5 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+    return y1, y2, y3, z1, z2, z3, y4, y5
 
 
 # 主函数 分析姿势并打印
@@ -69,8 +75,8 @@ def Posture_analysis(img, pTime):
     if len(lmList) != 0:
 
         # 检查前倾
-        # 鼻子 左肩 右肩
-        y1, y2, y3, z1, z2, z3= findAngle(lmList, img, 0, 11, 12)
+        # 鼻子 左肩 右肩 左眼 左耳
+        y1, y2, y3, z1, z2, z3, y4, y5 = findAngle(lmList, img, 0, 11, 12, 1, 7)
         y_avg = (y2 + y3) / 2
         y_gap = y_avg - y1
         per = np.interp(y_gap, (110, 180), (100, 0))
@@ -78,10 +84,20 @@ def Posture_analysis(img, pTime):
         z_avg = (z2 + z3)/2
         z_gap = z_avg - z1
         # print(z_gap)
+        y_head_gap = y4 - y5
+        # print(y_head_gap)
+        # 判断头部是否往前
         if z_gap > 40:
+            # 判断是否低头
             if per == 100:
-                cv2.putText(img, f'Head_Ahead', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
-                            (255, 0, 0), 3)
+                # 脸部朝前
+                if y_head_gap < 30:
+                    cv2.putText(img, f'Head_Up', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
+                                (255, 0, 0), 3)
+                # 脸部朝下
+                else:
+                    cv2.putText(img, f'Head_Ahead', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
+                                (255, 0, 0), 3)
 
         # 检查左右倾斜
         y_gap_sh = y2 - y3
@@ -103,17 +119,17 @@ def Posture_analysis(img, pTime):
     return img, pTime
 
 
-# def main():
-#     # cv2.VideoCapture(0) cv2.VideoCapture("Trainer/1.mp4")
-#     cap = cv2.VideoCapture(0)
-#     pTime = 0
-#     while True:
-#
-#         success, img = cap.read()
-#         # img = cv2.imread("Trainer/right2.jpg")
-#         img = cv2.resize(img, (1024, 768))
-#         img, pTime = Posture_analysis(img, pTime)
-#
-#
-# if __name__ == "__main__":
-#     main()
+def main():
+    # cv2.VideoCapture(0) cv2.VideoCapture("Trainer/1.mp4")
+    # cap = cv2.VideoCapture(0)
+    pTime = 0
+    while True:
+
+        # success, img = cap.read()
+        img = cv2.imread("Trainer/left2.jpg")
+        img = cv2.resize(img, (1024, 768))
+        img, pTime = Posture_analysis(img, pTime)
+
+
+if __name__ == "__main__":
+    main()
