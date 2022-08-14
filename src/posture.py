@@ -1,9 +1,4 @@
 import cv2
-import dlib
-import matplotlib.pyplot as plt
-import numpy as np
-
-import cv2
 import numpy as np
 import time
 import mediapipe as mp
@@ -37,13 +32,14 @@ def findPosition(img, results, draw=True):
     return lmList
 
 # 获取坐标 鼻子 左肩 右肩，强调绘制
-def findAngle(lmList, img, p1, p2, p3, draw=True):
+def findAngle(lmList, img, p1, p2, p3, p4, p5, draw=True):
 
-    # 获取坐标 鼻子 左肩 右肩
+    # 获取坐标 鼻子 左肩 右肩 左眼 左耳
     x1, y1, z1 = lmList[p1][1:]
     x2, y2, z2 = lmList[p2][1:]
     x3, y3, z3 = lmList[p3][1:]
-
+    x4, y4, z4 = lmList[p4][1:]
+    x5, y5, z5 = lmList[p5][1:]
     # 绘制
     if draw:
         cv2.line(img, (x2, y2), (x3, y3), (255, 255, 255), 3)
@@ -53,105 +49,67 @@ def findAngle(lmList, img, p1, p2, p3, draw=True):
         cv2.circle(img, (x2, y2), 15, (0, 0, 255), 2)
         cv2.circle(img, (x3, y3), 10, (0, 0, 255), cv2.FILLED)
         cv2.circle(img, (x3, y3), 15, (0, 0, 255), 2)
-        cv2.putText(img, f'{int(x1), int(y1), int(z1)}', (x1 - 50, y1 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
-        cv2.putText(img, f'{int(x2), int(y2), int(z2)}', (x2 - 50, y2 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
-        cv2.putText(img, f'{int(x3), int(y3), int(z3)}', (x3 - 50, y3 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.circle(img, (x4, y4), 10, (0, 0, 255), cv2.FILLED)
+        cv2.circle(img, (x4, y4), 15, (0, 0, 255), 2)
+        cv2.circle(img, (x5, y5), 10, (0, 0, 255), cv2.FILLED)
+        cv2.circle(img, (x5, y5), 15, (0, 0, 255), 2)
+        cv2.putText(img, f'{int(x1), int(y1), int(z1)}', (x1 - 50, y1 - 15), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x2), int(y2), int(z2)}', (x2 - 50, y2 - 15), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x3), int(y3), int(z3)}', (x3 - 50, y3 - 15), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x4), int(y4), int(z4)}', (x4 - 50, y4 - 30), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+        cv2.putText(img, f'{int(x5), int(y5), int(z5)}', (x5 - 50, y5 - 50), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
 
-    return y1, y2, y3, z1, z2, z3
+    return y1, y2, y3, z1, z2, z3, y4, y5
 
 
 # 主函数 分析姿势并打印
-def Posture_analysis(img, pTime):
+def postureFrameDetect(frame, photo):
 
-    # 运行时间评估
-    # t = time.time()
-    img, results = findPose(img, False)
-    # print(time.time() - t)
-
-    lmList = findPosition(img, results, False)
-    # print(lmList)
+    photo, results = findPose(photo, False)
+    lmList = findPosition(photo, results, False)
+    isPosture = 0
 
     if len(lmList) != 0:
 
         # 检查前倾
-        # 鼻子 左肩 右肩
-        y1, y2, y3, z1, z2, z3= findAngle(lmList, img, 0, 11, 12)
+        # 鼻子 左肩 右肩 左眼 左耳
+        y1, y2, y3, z1, z2, z3, y4, y5 = findAngle(lmList, photo, 0, 11, 12, 1, 7)
         y_avg = (y2 + y3) / 2
         y_gap = y_avg - y1
         per = np.interp(y_gap, (110, 180), (100, 0))
-        # print(y_gap, per)
         z_avg = (z2 + z3)/2
         z_gap = z_avg - z1
-        # print(z_gap)
+        y_head_gap = y4 - y5
+        # 判断头部是否往前
         if z_gap > 40:
+            # 判断是否低头
             if per == 100:
-                cv2.putText(img, f'Head_Ahead', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
-                            (255, 0, 0), 3)
+                # 脸部朝前
+                if y_head_gap < 30:
+                    cv2.putText(photo, f'Head_Up', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
+                                (255, 0, 0), 3)
+                    isPosture = 1
+                # 脸部朝下
+                else:
+                    cv2.putText(photo, f'Head_Ahead', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
+                                (255, 0, 0), 3)
+                    isPosture = 1
 
         # 检查左右倾斜
         y_gap_sh = y2 - y3
         y_gap_sh = abs(y_gap_sh)
         if y_gap_sh > 25:
-            cv2.putText(img, f'Body_Lean', (50, 150), cv2.FONT_HERSHEY_PLAIN, 3,
+            cv2.putText(photo, f'Body_Lean', (50, 150), cv2.FONT_HERSHEY_PLAIN, 3,
                         (255, 0, 0), 3)
-
-    # 获取帧率
-    cTime = time.time()
-    fps = 1 / (cTime - pTime)
-    pTime = cTime
-    cv2.putText(img, f'fps:{str(int(fps))}', (50, 50), cv2.FONT_HERSHEY_PLAIN, 3,
-                (255, 0, 0), 3)
+            isPosture = 1
 
     # 显示图像
-    cv2.imshow("Image", img)
+    cv2.imshow("Image", photo)
     cv2.waitKey(1)
-    return img, pTime
+    return isPosture, photo
 
 
 
-def postureFrameDetect(img, photo):#frame为摄像头原图，photo是绘制过的图片，在别的模块绘制的基础上再次绘制输出
 
-    mg, results = findPose(img, False)
-
-    lmList = findPosition(img, results, False)
-    # print(lmList)
-
-    if len(lmList) != 0:
-
-        # 检查前倾
-        # 鼻子 左肩 右肩
-        y1, y2, y3, z1, z2, z3 = findAngle(lmList, img, 0, 11, 12)
-        y_avg = (y2 + y3) / 2
-        y_gap = y_avg - y1
-        per = np.interp(y_gap, (110, 180), (100, 0))
-        # print(y_gap, per)
-        z_avg = (z2 + z3) / 2
-        z_gap = z_avg - z1
-        # print(z_gap)
-        if z_gap > 40:
-            if per == 100:
-                cv2.putText(img, f'Head_Ahead', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
-                            (255, 0, 0), 3)
-
-        # 检查左右倾斜
-        y_gap_sh = y2 - y3
-        y_gap_sh = abs(y_gap_sh)
-        if y_gap_sh > 25:
-            cv2.putText(img, f'Body_Lean', (50, 150), cv2.FONT_HERSHEY_PLAIN, 3,
-                        (255, 0, 0), 3)
-
-    # 获取帧率
-    cv2.putText(img, f'fps:{str(int(30))}', (50, 50), cv2.FONT_HERSHEY_PLAIN, 3,
-                (255, 0, 0), 3)
-    return 0,img
-
-
-if __name__ == '__main__':
-     #cv2.VideoCapture(0) cv2.VideoCapture("Trainer/1.mp4")
-     cap = cv2.VideoCapture(0)
-     pTime = 0
-     while True:
-          success, img = cap.read()
-          # img = cv2.imread("Trainer/right2.jpg")
-          img = cv2.resize(img, (1024, 768))
-          img, pTime = Posture_analysis(img, pTime)
+if __name__ =='__main__':
+    pass
