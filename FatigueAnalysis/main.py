@@ -100,7 +100,7 @@ print("[INFO] loading facial landmark predictor...")
 detector = dlib.get_frontal_face_detector()
 # 第二步：使用dlib.shape_predictor获得脸部特征位置检测器
 predictor = dlib.shape_predictor(
-    'D:/myworkspace/fatigue_detecting/model/shape_predictor_68_face_landmarks.dat')
+    '../lib/shape_predictor_68_face_landmarks.dat')
 
 # 第三步：分别获取左右眼面部标志的索引
 (lStart, lEnd) = face_utils.FACIAL_LANDMARKS_IDXS["left_eye"]
