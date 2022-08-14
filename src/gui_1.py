@@ -3,6 +3,34 @@
 from PySide2.QtCore import *
 from PySide2.QtGui import *
 from PySide2.QtWidgets import *
+import cv2 as cv
+import numpy as np
+from emotion import emotionFrameDetect as emotion_detect
+from posture import postureFrameDetect as posture_detect
+
+
+
+face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
+def faceDetectorVideo(img):
+    # Convert image to grayscale
+    gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
+    #t = time.time()#测试执行时间
+    faces = face_detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=10)
+    #caleFactor=1.1, minNeighbors=10执行时间110ms
+    #caleFactor=1.3, minNeighbors=10执行时间40ms
+    #print(time.time() - t)#测试执行时间
+    # 没检测到人脸
+    if faces == ():
+        return (0, 0, 0, 0), np.zeros((48, 48), np.uint8), img
+    # 检测到人脸，用(0,0,255)红色方框框出来
+    for (x, y, w, h) in faces:
+        cv.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), thickness=2)
+        roi_gray = gray[y:y + h, x:x + w]#截取人脸，压缩后作为神经网络的输入，神经网络输出情绪标签
+
+    roi_gray = cv.resize(roi_gray, (48, 48), interpolation=cv.INTER_AREA)
+
+    return (x, w, y, h), roi_gray, gray
+    # 返回人脸矩形参数，压缩人脸灰度图
 
 
 class Ui_MainWindow(object):
@@ -64,10 +92,13 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_2)
 
-        self.graphicsView = QGraphicsView(self.centralwidget)
-        self.graphicsView.setObjectName(u"graphicsView")
+        self.img_label = QLabel(self.centralwidget)
+        #self.img_label.setGeometry(QRect(0, 0, 640, 480))
+        self.img_label.setObjectName("img_label")
 
-        self.horizontalLayout_2.addWidget(self.graphicsView)
+
+
+        self.horizontalLayout_2.addWidget(self.img_label)
 
         self.verticalLayout_3 = QVBoxLayout()
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
@@ -151,6 +182,8 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
 
+
+
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
 
@@ -178,14 +211,74 @@ class Ui_MainWindow(object):
 class MainWindow(QMainWindow):
 
     def __init__(self):
-        super().__init__()
+        super().__init__()#调用父类QMainWindow的初始化函数
         # 使用ui文件导入定义界面类
         self.ui = Ui_MainWindow()
         # 初始化界面
         self.ui.setupUi(self)
 
 
+class MainCode(QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        QMainWindow.__init__(self)
+        Ui_MainWindow.__init__(self)
+        self.setupUi(self)
+        self.camera=cv.VideoCapture(0)
+        self.painter = QPainter(self)
+        self.buttonFlag = 0  # 没有按钮按下
+        print('reset')
+        self.pushButton.clicked.connect(self.xflag)
+        self.pushButton_2.clicked.connect(self.xflag_2)
+        self.pushButton_3.clicked.connect(self.xflag_3)
+        self.pushButton_4.clicked.connect(self.xflag_4)
+    def xflag(self):
+        print(self.buttonFlag)
+        if self.buttonFlag==0:
+            self.buttonFlag=1
+            #self.pushButton.setText('open1')
+        else:
+            self.buttonFlag=0
+            #self.pushButton.setText('close')
+    def xflag_2(self):
+        print(self.buttonFlag)
+        if self.buttonFlag==0:
+            self.buttonFlag=2
+            #self.pushButton_2.setText('open2')
+        else:
+            self.buttonFlag=0
+            #self.pushButton_2.setText('close')
+    def xflag_3(self):
+        print(self.buttonFlag)
+        if self.buttonFlag==0:
+            self.buttonFlag=3
+            #self.pushButton_3.setText('open3')
+        else:
+            self.buttonFlag=0
+            #self.pushButton_3.setText('close')
+    def xflag_4(self):
+        print(self.buttonFlag)
+        if self.buttonFlag==0:
+            self.buttonFlag=4
+            #self.pushButton_4.setText('open4')
+        else:
+            self.buttonFlag=0
+            #self.pushButton_4.setText('close')
+    def paintEvent(self, a0: QPaintEvent):
+        ret,frame=self.camera.read()
+        frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+        if self.buttonFlag==1:
+            rect, roi_gray, gray = faceDetectorVideo(frame)  # 输出人脸矩形坐标，压缩人脸灰度图
+            emoFlag, photo = emotion_detect(rect, roi_gray, frame, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片
+            self.QImage=QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
+        elif self.buttonFlag==4:
+            headPosture,photo=posture_detect(frame,frame)
+            self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
+        else:
+            self.QImage = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
+        self.img_label.setPixmap(QPixmap.fromImage(self.QImage))
+        self.update()
+
 app = QApplication([])
-mainw = MainWindow()
+mainw = MainCode()
 mainw.show()
 app.exec_()
