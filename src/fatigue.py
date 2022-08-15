@@ -219,13 +219,14 @@ def fatigueFrameDetect(datatuple,frametimes,frame):  # frame为摄像头原图�
         cv2.putText(frame, "Fatigue: {}".format(FATIGUE), (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
                     (255, 255, 0), 2)
 
+        '''
         # 第十六步：进行画图操作，68个特征点标识
         for (x, y) in shape:
             cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
-
+        
         print('嘴巴实时长宽比:{:.2f} '.format(mar) + "\t是否张嘴：" + str([False, True][mar > MAR_THRESH]))
         print('眼睛实时长宽比:{:.2f} '.format(ear) + "\t是否眨眼：" + str([False, True][COUNTER >= 1]))
-
+        '''
     # 确定疲劳提示:小于0.15为清醒，0.15-0.35临界状态，0.35-0.5轻度疲劳，0.5-0.6中度疲劳，大于0.6重度疲劳
     if FATIGUE < 0.15:
         cv2.putText(frame, "Clear", (100, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 3)
@@ -241,6 +242,7 @@ def fatigueFrameDetect(datatuple,frametimes,frame):  # frame为摄像头原图�
     # 窗口显示 show with opencv
     photo = frame
     datatuple = (FATIGUE, COUNTER, TOTAL, eTOTAL, PERCLOSE, mCOUNTER, mTOTAL, eTime, eFre, mFre)
+    photo = imutils.resize(photo, width=1280)#摄像头画面大小默认为1920*1280，检测缩小图片减少运算时间 ，播放再恢复原有大小
     return datatuple, frametimes,photo  # 输出识别标签，已经再绘制的图片
 
 
