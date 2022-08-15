@@ -104,8 +104,6 @@ def postureFrameDetect(frame, photo):
             isPosture = 1
 
     # 显示图像
-    cv2.imshow("Image", photo)
-    cv2.waitKey(1)
     return isPosture, photo
 
 
