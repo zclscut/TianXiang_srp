@@ -7,7 +7,7 @@ import cv2 as cv
 import numpy as np
 from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetect as posture_detect
-from fatigue import fatigueFrameDetect as fatigue_detect
+from fatigue_ui import fatigueFrameDetectDraw as fatigue_detect
 
 
 face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
