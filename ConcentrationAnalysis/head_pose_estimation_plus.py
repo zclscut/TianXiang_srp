@@ -103,17 +103,17 @@ def get_head_pose_estimate_frame(frame):
             pitch, yaw, roll = trans_euler_angle(euler_angle)
             # print('pitch:{}, yaw:{}, roll:{}'.format(pitch, yaw, roll))
 
-            cv.putText(frame, f'pitch: {round(pitch, 2)}', (30, 150), fontFace=cv.FONT_HERSHEY_SIMPLEX,
-                       fontScale=1, color=(0, 0, 255), thickness=2)
-            cv.putText(frame, f'yaw: {round(yaw, 2)}', (30, 180), fontFace=cv.FONT_HERSHEY_SIMPLEX,
-                       fontScale=1, color=(0, 0, 255), thickness=2)
-            cv.putText(frame, f'roll: {round(roll, 2)}', (30, 210), fontFace=cv.FONT_HERSHEY_SIMPLEX,
-                       fontScale=1, color=(0, 0, 255), thickness=2)
+            # cv.putText(frame, f'pitch: {round(pitch, 2)}', (30, 150), fontFace=cv.FONT_HERSHEY_SIMPLEX,
+            #            fontScale=1, color=(0, 0, 255), thickness=2)
+            # cv.putText(frame, f'yaw: {round(yaw, 2)}', (30, 180), fontFace=cv.FONT_HERSHEY_SIMPLEX,
+            #            fontScale=1, color=(0, 0, 255), thickness=2)
+            # cv.putText(frame, f'roll: {round(roll, 2)}', (30, 210), fontFace=cv.FONT_HERSHEY_SIMPLEX,
+            #            fontScale=1, color=(0, 0, 255), thickness=2)
 
             return round(pitch,2),round(yaw,2),round(roll,2),frame
 
     else: # 未检测到人脸
-        pitch, yaw, roll = 0, 0, 0
+        pitch, yaw, roll = 100, 100, 100
         return pitch,yaw,roll,frame
 
 

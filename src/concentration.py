@@ -20,16 +20,6 @@ tddfa = TDDFA_ONNX()
 
 
 def draw_pose(img, directions_lst, bound_box_lst, landmarks_lst, show_bbox=False, show_landmarks=False):
-    '''
-    function: 绘制头部姿态图
-    :param img:
-    :param directions_lst:
-    :param bound_box_lst:
-    :param landmarks_lst:
-    :param show_bbox:
-    :param show_landmarks:
-    :return: img
-    '''
     if show_bbox:
         for bound_box in bound_box_lst:
             x_min, y_min, x_max, y_max = bound_box[:4]
@@ -78,12 +68,12 @@ def get_euler_angle(frame):
 
         roll, yaw, pitch = euler_angle_lst[-1]  # 选取左边第一张脸
         # print(f'roll: {roll}, yaw: {yaw}, pitch: {round(pitch)} cost time: {round((t1 - t0) * 1000, 2)}ms')
-        cv2.putText(frame, f'pitch: {round(pitch, 2)}', (20, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=0.8, color=(0, 0, 255), thickness=2)
-        cv2.putText(frame, f'yaw: {round(yaw, 2)}', (20, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=0.8, color=(0, 0, 255), thickness=2)
-        cv2.putText(frame, f'roll: {round(roll, 2)}', (20, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                    fontScale=0.8, color=(0, 0, 255), thickness=2)
+        # cv2.putText(frame, f'pitch: {round(pitch, 2)}', (20, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        #             fontScale=0.8, color=(0, 0, 255), thickness=2)
+        # cv2.putText(frame, f'yaw: {round(yaw, 2)}', (20, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        #             fontScale=0.8, color=(0, 0, 255), thickness=2)
+        # cv2.putText(frame, f'roll: {round(roll, 2)}', (20, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        #             fontScale=0.8, color=(0, 0, 255), thickness=2)
         # 添加轴
         modified_frame = draw_pose(
             frame,
@@ -92,108 +82,83 @@ def get_euler_angle(frame):
             landmarks_lst, )
 
     except:  # 未检测到人脸时候返回原始图片
-        pitch, yaw, roll=60,70,70
+        pitch, yaw, roll=100,100,100
         return pitch,yaw,roll, frame
     else:
         return pitch,yaw,roll, modified_frame
 
 
-def get_overall_emotion_score(detect_times,emotion_times_dict):
-    '''
-    根据一个周期内的表情次数(emotion_times_dict)计算表情综合评分(overall_emotion_score)
-    :param detect_times:
-    :param emotion_times_dict:
-    :return:
-    '''
-    # 根据AHP获取的每个表情所占的二级权重
-    emotion_weight_dict={'Angry':0.06312521,'Hate':0.02693035,'Fear':0.03981097,'Happy':0.36753161,
-                 'Sad':0.05957265,'Surprise':0.25979793,'Neutral':0.18323128,}
-    overall_emotion_score=0
-    for key,value in emotion_weight_dict.items():
-        overall_emotion_score+=100*(emotion_times_dict[key]/detect_times)*value
-    print(f'表情综合得分:{round(overall_emotion_score,2)}')
-    return overall_emotion_score # 表情综合评分
+def get_emotion_score(emotion_times_dict):
+    down_dict = sorted(emotion_times_dict.items(), key=lambda x: x[1], reverse=True)  # 降序
+    print(f'emotion_times_lst:{down_dict}')
+    emotion_grade_dict = {'optimistic': 0, 'neutral': 0, 'negative': 0}
+    for key, value in emotion_times_dict.items():  # 转换为三类情绪
+        if key == 'Happy':
+            emotion_grade_dict['optimistic'] = value
+        elif key == 'Surprise' or key == 'Neutral':
+            emotion_grade_dict['neutral'] = emotion_grade_dict['neutral'] + value
+        else:
+            emotion_grade_dict['negative'] = emotion_grade_dict['negative'] + value
+    times_lst = [value for key, value in emotion_grade_dict.items()]
+    try:
+        for key, value in emotion_grade_dict.items():  # 归一化
+            emotion_grade_dict[key] = value / sum(times_lst)
+    except:
+        emotion_score = 0  # 一个周期内均没检测到人脸
+    else:
+        emotion_score = emotion_grade_dict['optimistic'] * 0.5 + emotion_grade_dict['neutral'] * 0.3 + \
+                        emotion_grade_dict['negative'] * 0.2
+    return round(emotion_score/0.5,2)
+
+def get_head_pose_score(pitch_lst,yaw_lst,roll_lst):
+    # 头部姿态角取三者最大值
+    try:
+        pitch_ave = sum(pitch_lst) / len(pitch_lst)
+        yaw_ave = sum(yaw_lst) / len(yaw_lst)
+        roll_ave = sum(roll_lst) / len(roll_lst)
+    except:
+        head_pose_score = 0  # 没有检测到人脸
+    else:
+        if pitch_ave > 20:  # 抬头/低头角度大于60度,权重视为0,得分为0
+            pitch_weight = 0
+        else:
+            pitch_weight = 1 - pitch_ave/20
+        if yaw_ave > 40:  # 左/右转头角度大于70度,权重视为0,得分为0
+            yaw_weight = 0
+        else:
+            yaw_weight = 1 - yaw_ave/40
+        if roll_ave > 20:
+            roll_weight =0
+        else:
+            roll_weight = 1 - roll_ave/20
+        head_pose_score=min(pitch_weight,yaw_weight,roll_weight)
+    return  round(head_pose_score,2) # 头部姿态评分权重
 
 
-def get_fatigue_score(detect_times,eye_close_time_lst,yawn_times,mouth_open_time_lst,blink_times,detect_time):
-    '''
-    根据一个周期中眨眼次数、打哈欠次数和总闭眼时间确定疲劳度得分
-    :param eye_close_time_lst:一个周期中闭眼时长列表
-    :param mouth_open_time_lst:一个周期中闭眼时长列表
-    :param detect_time:一个周期检测消耗时长
-    :param yawn_times: 一个周期中打哈欠次数(连续3帧检测)
-    :param blink_times: 一个周期中眨眼次数(连续3帧检测)
-    :param detect_times:
-    :return:
-    '''
-    if eye_close_time_lst==[]:
-        eye_close_time_lst.append(0)
-    if mouth_open_time_lst==[]:
-        mouth_open_time_lst.append(0)
-    eye_close_time_ratio=sum(eye_close_time_lst)/detect_time
-    mouth_open_time_ratio=sum(mouth_open_time_lst)/detect_time
-    blink_freq=blink_times/detect_times # 眨眼频率
-    yawn_fraq=yawn_times/detect_times # 打哈欠频率
-
-    # 一般情况得分
-    fatigue_score=100*min([0.4*(1-blink_freq),0.6*(1-yawn_fraq)])
-
-    # 疲劳状态得分为0
-    # 闭眼时长大于2s
-    # 嘴巴张大时长大于2s
-    if (max(eye_close_time_lst)>2) or (max(mouth_open_time_lst)>2):
+def get_fatigue_score(fatigue):
+    # 确定疲劳等级提示:小于0.15为清醒，0.15-0.35临界状态，0.35-0.5轻度疲劳，0.5-0.6中度疲劳，大于0.6重度疲劳
+    fatigue_score=1-fatigue
+    if fatigue>1:
         fatigue_score=0
-    print(f'疲劳度得分{round(fatigue_score,2)}')
-
-    return fatigue_score
-
-
-
-def get_head_pose_score(pitch_lst,yaw_lst):
-    '''
-    根据一个周期内的抬头/低头(pitch)或转头(yaw)角度的均值计算头部姿态的评分
-    :param pitch_lst:
-    :param yaw_lst:
-    :return:
-    '''
-    # 绝对值求和并计算平均值
-    pitch_sum,yaw_sum=0,0
-    for p,y in zip(pitch_lst,yaw_lst):
-        pitch_sum+=abs(p)
-        yaw_sum+=abs(y)
-    pitch_ave=pitch_sum/len(pitch_lst)
-    yaw_ave=yaw_sum/len(yaw_lst)
-
-    # 计算权重
-    if pitch_ave>60: # 抬头/低头角度大于60度,权重视为0,得分为0
-        pitch_weight=0
-    else:
-        pitch_weight=1-pitch_ave/60
-    if yaw_ave>70: # 左/右转头角度大于70度,权重视为0,得分为0
-        yaw_weight=0
-    else:
-        yaw_weight=1-yaw_ave/70
-    # pitch和yaw的都同等重要表征不专注
-    head_pose_score=100*(min(pitch_weight,yaw_weight))
-    print(f'头部姿态得分{round(head_pose_score,2)}')
-    return  head_pose_score # 头部姿态评分权重
-
-
-def get_focus_grade(focus_score):
-    '''
-    根据专注度评分得到专注度等级
-    :param focus_score:
-    :return:
-    '''
-    focus_grade=None
-    return focus_grade
+    return round(fatigue_score,2)
 
 
 def concentrationFrameDetect(faces,gray, photo):#frame为摄像头原图，photo是绘制过的图片，在别的模块绘制的基础上再次绘制输出
     frame=photo
-    pitch,yaw,roll,modified_frame=get_euler_angle(frame)
-    return pitch,yaw,roll,modified_frame
+    pitch,yaw,roll,photo=get_euler_angle(frame)
+    return pitch,yaw,roll,photo
 
 if __name__ == '__main__':
-    pass
+    cap=cv2.VideoCapture(0)
+    while cap.isOpened():
+        ret,frame=cap.read()
+        if ret:
+            pitch, yaw, roll, frame = get_euler_angle(frame)
+        cv2.namedWindow('Frame',cv2.WINDOW_NORMAL)
+        cv2.imshow('Frame',frame)
+        if cv2.waitKey(1)==27:
+            cv2.destroyAllWindows()
+            break
+
+
 

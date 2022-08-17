@@ -106,8 +106,64 @@ def postureFrameDetect(frame, photo):
     # 显示图像
     return isPosture, photo
 
+# 增加posture_grade参数
+def postureFrameDetectCopy(frame,photo):
+    photo, results = findPose(photo, False)
+    lmList = findPosition(photo, results, False)
+    isPosture = 0
+    posture_grade=1 # 坐姿正常
 
+    if len(lmList) != 0:
 
+        # 检查前倾
+        # 鼻子 左肩 右肩 左眼 左耳
+        y1, y2, y3, z1, z2, z3, y4, y5 = findAngle(lmList, photo, 0, 11, 12, 1, 7)
+        y_avg = (y2 + y3) / 2
+        y_gap = y_avg - y1
+        per = np.interp(y_gap, (110, 180), (100, 0))
+        z_avg = (z2 + z3)/2
+        z_gap = z_avg - z1
+        y_head_gap = y4 - y5
+        # 判断头部是否往前
+        if z_gap > 40:
+            # 判断是否低头
+            if per == 100:
+                # 脸部朝前
+                if y_head_gap < 30:
+                    cv2.putText(photo, f'Head_Up', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
+                                (255, 0, 0), 3)
+                    isPosture = 1
+                    posture_grade = 2 # Head_Up脸部朝前
+                # 脸部朝下
+                else:
+                    cv2.putText(photo, f'Head_Ahead', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
+                                (255, 0, 0), 3)
+                    isPosture = 1
+                    posture_grade=3 # Head_Ahead脸部朝下
 
+        # 检查左右倾斜
+        y_gap_sh = y2 - y3
+        y_gap_sh = abs(y_gap_sh)
+        if y_gap_sh > 25:
+            cv2.putText(photo, f'Body_Lean', (50, 150), cv2.FONT_HERSHEY_PLAIN, 3,
+                        (255, 0, 0), 3)
+            isPosture = 1
+            posture_grade = 4  # Body_Lean身体倾斜
+
+    # 显示图像
+    return isPosture,posture_grade, photo
+
+def run():
+    cap = cv2.VideoCapture(0)
+    while cap.isOpened():
+        ret, frame = cap.read()
+        if ret:
+            isPosture,posture, photo = postureFrameDetectCopy(frame,frame)
+            cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
+            print(posture)
+            cv2.imshow('Frame', photo)
+            if cv2.waitKey(1) == 27:
+                break
 if __name__ =='__main__':
+    run()
     pass

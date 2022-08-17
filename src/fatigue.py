@@ -1,12 +1,11 @@
+import dlib
+import cv2
 from imutils import face_utils
 import numpy as np
 import imutils
 import time
-import dlib
-import cv2
 
-# 初始化DLIB的人脸检测器（HOG），然后创建面部标志物预测
-print("[INFO] loading facial landmark predictor...")
+
 # 第一步：使用dlib.get_frontal_face_detector() 获得脸部位置检测器
 detector = dlib.get_frontal_face_detector()
 # 第二步：使用dlib.shape_predictor获得脸部特征位置检测器
@@ -130,6 +129,7 @@ def get_fatigue_grade(fatigue):
 # 添加文字
 def add_text(frame,eye_conti_frames,ear,blink_times,blink_freq,mouth_conti_frames,mar,yawn_times,
              yawn_freq,eye_close_times,perclose,rects,frame_counter,fatigue,fatigue_grade):
+    cv2.putText(frame, "Press 'ESC': Quit", (20, 450), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (84, 255, 159), 2)
     cv2.putText(frame, "COUNTER: {}".format(eye_conti_frames), (20, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     cv2.putText(frame, "EAR: {:.2f}".format(ear), (170, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     cv2.putText(frame, "Blinks: {}".format(blink_times), (320, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
@@ -150,16 +150,16 @@ def add_text(frame,eye_conti_frames,ear,blink_times,blink_freq,mouth_conti_frame
     fatigue_dict = {1: "Clear", 2: "Critical state", 3: 'Mild fatigue', 4: 'Moderate fatigue', 5: 'Severe fatigue'}
     cv2.putText(frame, f'{fatigue_dict[fatigue_grade]}', (10, 200), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 3)
 
-    cv2.putText(frame, "Press 'ESC': Quit", (20, 500), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (84, 255, 159), 2)
+
 
 
 # 参数初始化
-period_frames = 1000  # 1000帧为一个周期
+period_frames = 100  # 1000帧为一个周期
 step_frames = 10  # 10帧为一个检测步长
 frame_counter = 0  # 帧计数器
 # 初始化疲劳评分
 fatigue = 0
-fatigue_grade = 'None'
+fatigue_grade = 1
 # 初始化帧计数器和眨眼总数、闭眼总次数、perclose
 eye_conti_frames = 0  # 眼睛长宽比小于阈值的连续帧数
 blink_times = 0  # 周期内眨眼总次数
@@ -185,65 +185,66 @@ if __name__ == '__main__':
         # 第六步：使用detector(gray, 0) 进行脸部位置检测
         rects = detector(gray, 0)
         # 第七步：循环脸部位置信息，使用predictor(gray, rect)获得脸部特征位置的信息
-        for rect in rects:
+        if rects:
+            for rect in rects:
+                # 计算ear,mar
+                ear, mar = ear_mar(gray, rect)
+                # 第十三步：循环，满足条件的，眨眼次数+1
+                ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames = eye_params(ear, \
+                        eye_conti_frames, step_frames,  blink_times,eye_close_times,   eye_close_frames)
 
-            # 计算ear,mar
-            ear, mar = ear_mar(gray, rect)
+                # 眨眼频率
+                blink_freq = blink_times / period_frames
+                # perclose
+                perclose = eye_close_frames / period_frames
+                # 同理，判断是否打哈欠
+                mar, mouth_conti_frames, step_frames, yawn_times = mouth_params(mar, mouth_conti_frames, step_frames,
+                                                                                yawn_times)
+                # 打哈欠频率
+                yawn_freq = yawn_times / period_frames
+                # 疲劳得分
+                fatigue = get_fatigue(blink_freq, yawn_freq, perclose, eye_close_times)
+                # 疲劳等级
+                fatigue_grade = get_fatigue_grade(fatigue)
+                # 添加文字
+                add_text(frame, eye_conti_frames, ear, blink_times, blink_freq, mouth_conti_frames, mar, yawn_times,
+                         yawn_freq, eye_close_times, perclose, rects, frame_counter, fatigue, fatigue_grade)
 
-            # 第十三步：循环，满足条件的，眨眼次数+1
-            ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames = eye_params(ear, \
-                                                                                                            eye_conti_frames,
-                                                                                                            step_frames,
-                                                                                                            blink_times,
-                                                                                                            eye_close_times,
-                                                                                                            eye_close_frames)
-            # 眨眼频率
-            blink_freq = blink_times / period_frames
-            # perclose
-            perclose = eye_close_frames / period_frames
-            # 同理，判断是否打哈欠
-            mar, mouth_conti_frames, step_frames, yawn_times = mouth_params(mar, mouth_conti_frames, step_frames,
-                                                                            yawn_times)
-            # 打哈欠频率
-            yawn_freq = yawn_times / period_frames
-            # 疲劳得分
-            fatigue = get_fatigue(blink_freq, yawn_freq, perclose, eye_close_times)
-            # 疲劳等级
-            fatigue_grade = get_fatigue_grade(fatigue)
-            # 添加文字
-            add_text(frame, eye_conti_frames, ear, blink_times, blink_freq, mouth_conti_frames, mar, yawn_times,
-                     yawn_freq, eye_close_times, perclose, rects, frame_counter, fatigue, fatigue_grade)
-            # 窗口显示 show with opencv
-            cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
-            cv2.imshow("Frame", frame)
 
-            if frame_counter == period_frames:  # 一个计数周期结束
-                cv2.imwrite('./out.png', frame)
+        if frame_counter == period_frames:  # 一个计数周期结束
+            # 进入下一个周期,参数初始化
+            period_frames = 100  # 1000帧为一个周期
+            step_frames = 10  # 10帧为一个检测步长
+            frame_counter = 0  # 帧计数器
+            # 初始化疲劳评分
+            fatigue = 0
+            fatigue_grade = 'None'
+            # 初始化帧计数器和眨眼总数、闭眼总次数、perclose
+            eye_conti_frames = 0  # 眼睛长宽比小于阈值的连续帧数
+            blink_times = 0  # 周期内眨眼总次数
+            eye_close_times = 0  # 闭眼总次数
+            perclose = 0
+            # 初始化帧计数器和打哈欠总数
+            mouth_conti_frames = 0  # 嘴巴纵横比大于阈值的连续帧数
+            yawn_times = 0  # 周期内打哈欠总数
+            # 初始化闭眼时长、眨眼频率、和打哈欠频率
+            eye_close_frames = 0  # 周期内连续闭眼总帧数
+            blink_freq = 0  # 眨眼频率
+            yawn_freq = 0  # 打哈欠频率
 
-                # 进入下一个周期,参数初始化
-                period_frames = 100  # 1000帧为一个周期
-                step_frames = 10  # 10帧为一个检测步长
-                frame_counter = 0  # 帧计数器
-                # 初始化疲劳评分
-                fatigue = 0
-                fatigue_grade = 'None'
-                # 初始化帧计数器和眨眼总数、闭眼总次数、perclose
-                eye_conti_frames = 0  # 眼睛长宽比小于阈值的连续帧数
-                blink_times = 0  # 周期内眨眼总次数
-                eye_close_times = 0  # 闭眼总次数
-                perclose = 0
-                # 初始化帧计数器和打哈欠总数
-                mouth_conti_frames = 0  # 嘴巴纵横比大于阈值的连续帧数
-                yawn_times = 0  # 周期内打哈欠总数
-                # 初始化闭眼时长、眨眼频率、和打哈欠频率
-                eye_close_frames = 0  # 周期内连续闭眼总帧数
-                blink_freq = 0  # 眨眼频率
-                yawn_freq = 0  # 打哈欠频率
+        # 窗口显示 show with opencv
+        cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
+        cv2.imshow("Frame", frame)
+        # if the `ESC` key was pressed, break from the loop
+        if cv2.waitKey(1) == 27:
+            cv2.destroyAllWindows()
+            cap.release()
+            break
 
-            # if the `ESC` key was pressed, break from the loop
-            if cv2.waitKey(1) == 27:
-                cv2.destroyAllWindows()
-                break
+
+
+
+
 
 
 
