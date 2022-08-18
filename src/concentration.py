@@ -68,11 +68,11 @@ def get_euler_angle(frame):
 
         roll, yaw, pitch = euler_angle_lst[-1]  # 选取左边第一张脸
         # print(f'roll: {roll}, yaw: {yaw}, pitch: {round(pitch)} cost time: {round((t1 - t0) * 1000, 2)}ms')
-        # cv2.putText(frame, f'pitch: {round(pitch, 2)}', (20, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        # cv2.putText(frame, f'pitch: {round(pitch, 2)}', (80, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
         #             fontScale=0.8, color=(0, 0, 255), thickness=2)
-        # cv2.putText(frame, f'yaw: {round(yaw, 2)}', (20, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        # cv2.putText(frame, f'yaw: {round(yaw, 2)}', (80, 130), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
         #             fontScale=0.8, color=(0, 0, 255), thickness=2)
-        # cv2.putText(frame, f'roll: {round(roll, 2)}', (20, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+        # cv2.putText(frame, f'roll: {round(roll, 2)}', (80, 160), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
         #             fontScale=0.8, color=(0, 0, 255), thickness=2)
         # 添加轴
         modified_frame = draw_pose(
@@ -91,24 +91,30 @@ def get_euler_angle(frame):
 def get_emotion_score(emotion_times_dict):
     down_dict = sorted(emotion_times_dict.items(), key=lambda x: x[1], reverse=True)  # 降序
     print(f'emotion_times_lst:{down_dict}')
-    emotion_grade_dict = {'optimistic': 0, 'neutral': 0, 'negative': 0}
+    emotion_sort_dict = {'optimistic': 0, 'neutral': 0, 'negative': 0}
     for key, value in emotion_times_dict.items():  # 转换为三类情绪
         if key == 'Happy':
-            emotion_grade_dict['optimistic'] = value
+            emotion_sort_dict['optimistic'] = value
         elif key == 'Surprise' or key == 'Neutral':
-            emotion_grade_dict['neutral'] = emotion_grade_dict['neutral'] + value
+            emotion_sort_dict['neutral'] = emotion_sort_dict['neutral'] + value
         else:
-            emotion_grade_dict['negative'] = emotion_grade_dict['negative'] + value
-    times_lst = [value for key, value in emotion_grade_dict.items()]
+            emotion_sort_dict['negative'] = emotion_sort_dict['negative'] + value
+    times_lst = [value for key, value in emotion_sort_dict.items()]
+
+    # 以一个周期内出现情绪次数类别最多组划分情绪类别
+    down_emotion_sort_lst = sorted(emotion_sort_dict.items(), key=lambda x: x[1], reverse=True)
+    emotion_sort = down_emotion_sort_lst[0][0]
     try:
-        for key, value in emotion_grade_dict.items():  # 归一化
-            emotion_grade_dict[key] = value / sum(times_lst)
+        for key, value in emotion_sort_dict.items():  # 归一化
+            emotion_sort_dict[key] = value / sum(times_lst)
     except:
         emotion_score = 0  # 一个周期内均没检测到人脸
+        emotion_sort = 'negative'  # 情绪划分视为消极？
     else:
-        emotion_score = emotion_grade_dict['optimistic'] * 0.5 + emotion_grade_dict['neutral'] * 0.3 + \
-                        emotion_grade_dict['negative'] * 0.2
-    return round(emotion_score/0.5,2)
+        emotion_score = emotion_sort_dict['optimistic'] * 0.5 + emotion_sort_dict['neutral'] * 0.3 + \
+                        emotion_sort_dict['negative'] * 0.2
+    return round(emotion_score / 0.5, 2), emotion_sort
+
 
 def get_head_pose_score(pitch_lst,yaw_lst,roll_lst):
     # 头部姿态角取三者最大值
@@ -118,12 +124,15 @@ def get_head_pose_score(pitch_lst,yaw_lst,roll_lst):
         roll_ave = sum(roll_lst) / len(roll_lst)
     except:
         head_pose_score = 0  # 没有检测到人脸
+        pitch_ave=20
+        roll_ave=40
+        yaw_ave=20
     else:
-        if pitch_ave > 20:  # 抬头/低头角度大于60度,权重视为0,得分为0
+        if pitch_ave > 15:  # 抬头/低头角度大于15度,权重视为0,得分为0
             pitch_weight = 0
         else:
-            pitch_weight = 1 - pitch_ave/20
-        if yaw_ave > 40:  # 左/右转头角度大于70度,权重视为0,得分为0
+            pitch_weight = 1 - pitch_ave/15
+        if yaw_ave > 40:  # 左/右转头角度大于40度,权重视为0,得分为0
             yaw_weight = 0
         else:
             yaw_weight = 1 - yaw_ave/40
@@ -132,7 +141,7 @@ def get_head_pose_score(pitch_lst,yaw_lst,roll_lst):
         else:
             roll_weight = 1 - roll_ave/20
         head_pose_score=min(pitch_weight,yaw_weight,roll_weight)
-    return  round(head_pose_score,2) # 头部姿态评分权重
+    return  round(head_pose_score,2),round(pitch_ave,2),round(yaw_ave,2),round(roll_ave,2) # 头部姿态评分权重
 
 
 def get_fatigue_score(fatigue):

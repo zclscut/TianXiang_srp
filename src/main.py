@@ -1,12 +1,15 @@
-import numpy as np
 import cv2
 import dlib
 import time
+import datetime
+import numpy as np
+from scipy import stats
 from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetectCopy as posture_detect
 from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score
 from fatigue import ear_mar, eye_params, mouth_params, get_fatigue, get_fatigue_grade, add_text
 from ConcentrationAnalysis.head_pose_estimation_plus import get_head_pose_estimate_frame  # 获取pitch,yaw
+from database import doSql # 数据库操作类的库
 
 # 表情组人脸识别模型加载
 face_detector = cv2.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
@@ -17,12 +20,14 @@ predictor = dlib.shape_predictor('../lib/shape_predictor_68_face_landmarks.dat')
 
 # 定义常数
 # emotion_detect函数输出数字标签，需查字典得到情绪类别
+'''没有检测到人脸,专注度检测当做厌恶情绪,情绪等级划分？'''
 emotion_dic = {0: 'Angry', 1: 'Fear', 2: 'Happy', 3: 'Neutral', 4: 'Sad', 5: 'Surprise', 6: 'Hate'}
 emotion_times_dict = {'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0, 'Sad': 0, 'Surprise': 0, 'Neutral': 0, }
-emotion_grade_dict = {1: 'optimistic', 2: 'neutral', 3: 'negative'}
+
 
 # 身体姿态参数
 posture_grade_dict = {1: 'Normal', 2: 'Head_Up', 3: 'Head_Ahead', 4: 'Body_Lean'}
+posture_grade_lst=[] # 存储一个周期疲劳等级
 
 # 疲劳度的参数初始化
 period_frames = 100  # 1000帧为一个周期
@@ -43,15 +48,17 @@ yawn_freq = 0  # 打哈欠频率
 fatigue = 0  # 初始化疲劳评分
 fatigue_grade = 1  # 疲劳等级初始化默认1级别
 fatigue_grade_dict = {1: "Clear", 2: "Critical state", 3: 'Mild fatigue', 4: 'Moderate fatigue', 5: 'Severe fatigue'}
-fatigue_lst = []  # 存储一个周期疲劳度出现的次数
+fatigue_grade_lst=[] # 存储一个周期疲劳等级
+fatigue_lst = []  # 存储一个周期疲劳度
 
 # 专注度参数
-pitch_lst = []  # 存放每帧数据的pitch
-yaw_lst = []  # 存放每帧数据的yaw
-roll_lst = []
+pitch_lst = []  # 存放每帧数据的pitch绝对值
+yaw_lst = []  # 存放每帧数据的yaw绝对值
+roll_lst = [] # 存放每帧数据的yaw绝对值
 focus_grade = 5  # 初始专注度等级unknown
-focus_grade_dict = {1: 'extreme_more_focus', 2: 'more_focus', 3: 'less_focus', 4: 'extreme_less_focus', 5: 'unknown'}
-i = 0
+focus_grade_dict = {1: 'extreme_more_focus', 2: 'more_focus', 3: 'less_focus', 4: 'extreme_less_focus',5:'unknown'}
+i = 0 # 运行周期计数
+t_1s=0 # 一秒定时
 
 
 def faceDetectorVideo(img):
@@ -81,12 +88,12 @@ def get_focus_score(head_pose_score, emotion_score, fatigue_score):
 
     if focus_score < 0.45:
         focus_grade = 4
-    elif 0.45 <= focus_score < 0.6:
-        focus_grade = 2
-    elif 0.6 <= focus_score < 0.75:
+    elif 0.45 <= focus_score < 0.65:
         focus_grade = 3
+    elif 0.65 <= focus_score < 0.7:
+        focus_grade = 2
     else:
-        focus_grade = 4
+        focus_grade = 1
 
     return round(focus_score, 2),focus_grade
 
@@ -94,20 +101,22 @@ def get_focus_score(head_pose_score, emotion_score, fatigue_score):
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)  # 打开摄像头
     while True:
+        frame_start=time.time() # 1帧计时开始
         cv2.ocl.setUseOpenCL(False)  # 避免opencl与tensorflow冲突
 
         ret, frame = cap.read()
         rect, roi_gray, gray = faceDetectorVideo(frame)  # 输出人脸矩形坐标，压缩人脸灰度图
-        frame_start_time = time.time()  # 帧计时开始,测试模块执行时间
         emoFlag, photo = emotion_detect(rect, roi_gray, frame, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片frame
+        ''' emoFlag没有检测到人脸时候返回0'''
+        # print(f'emoFlag:{emoFlag}')
 
         frame_counter += 1
         # --------表情模块模块-----------
         emotion_times_dict[emotion_dic[emoFlag]] = emotion_times_dict[emotion_dic[emoFlag]] + 1
 
         # --------身体姿态模块-----------
-        # isPosture, posture_grade, photo=posture_detect(frame,photo)
-        # print(f'posture_grade:{posture_grade}')
+        isPosture, posture_grade, photo=posture_detect(frame,photo)
+        posture_grade_lst.append(posture_grade)
 
         # --------疲劳度模块------------
         rects = detector(gray, 0)  # 这个地方重复,但换成前面的rects会出错
@@ -139,8 +148,9 @@ if __name__ == '__main__':
 
             # 疲劳等级
             fatigue_grade = get_fatigue_grade(fatigue)
+            fatigue_grade_lst.append(fatigue_grade)
 
-            # 添加文字
+            # 实时显示帧添加文字
             if frame_counter != period_frames:
                 add_text(frame, eye_conti_frames, ear, blink_times, blink_freq, mouth_conti_frames, mar, yawn_times,
                          yawn_freq, eye_close_times, perclose, rects, frame_counter, fatigue, fatigue_grade)
@@ -151,19 +161,87 @@ if __name__ == '__main__':
             yaw_lst.append(abs(yaw))
             roll_lst.append(abs(roll))
 
+        delt_time = 1000 * (time.time() - frame_start) # 以毫秒为单位
+        print(f'一帧处理需要:{delt_time}ms')
+        t_1s += delt_time
+        if t_1s >= 1000:  # 1s计时结束,写入一次原始数据
+            # --------1s写一次原始数据---------
+            # now 是待插入数据库的record_time字段
+            now=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            print(now)
+            t_1s=0
+
+            # 插入数据
+            sql = f'''
+            use online_learning;
+            insert into study_state values(2,2,2,'{now}');
+            '''
+            # doSql(sql, option='others')
+
         if frame_counter == period_frames:  # 一个计数周期结束
             i += 1
             # 头部得分
-            head_pose_score = get_head_pose_score(pitch_lst, yaw_lst, roll_lst)
-            # 表情得分
-            emotion_score = get_emotion_score(emotion_times_dict)
+            head_pose_score,pitch_ave,yaw_ave,roll_ave = get_head_pose_score(pitch_lst, yaw_lst, roll_lst)
             # 疲劳得分
-            fatigue_score = get_fatigue_score(max(fatigue_lst))
+            '''一个周期都没有检测到人脸,疲劳度？'''
+            if fatigue_lst:
+                fatigue_score = get_fatigue_score(fatigue_lst[-1])  # 最后一次的fatigue代表一个周期的疲劳度
+                fatigue_grade=fatigue_grade_lst[-1]
+            else:
+                if pitch_ave<15: # 低头/抬头检测不到人脸的临界角
+                    fatigue=1 # 严重疲劳状态
+                    fatigue_grade=5
+                else:
+                    fatigue=0.5 # 人已经不在镜头视线范围,默认中度疲劳
+                    fatigue_grade=4
+                fatigue_score=1-fatigue # 疲劳分数正向化
+
+            # 表情得分
+            emotion_score,emotion_sort = get_emotion_score(emotion_times_dict)
+            emotion_sort_dict = {'optimistic': 1, 'neutral': 2, 'negative': 3}
+            emotion_grade=emotion_sort_dict[emotion_sort] # 情绪等级
+
             # 专注度得分
             focus_score,focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
 
+            # --------周期数据写入数据库study_state------------
+            # values中参数依次为student_id,state_key,state_value,record_time
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            student_id=1  # 暂默认为1
+
+            state_key=1
+            emotion_sql = f'''
+            use online_learning;
+            insert into study_state values({student_id},{state_key},{emotion_grade},'{now}');
+            '''
+            doSql(emotion_sql, option='others')
+
+            state_key = 2
+            fatigue_sql = f'''
+            use online_learning;
+            insert into study_state values({student_id},{state_key},{fatigue_grade},'{now}');
+            '''
+            doSql(fatigue_sql, option='others')
+
+            state_key=3
+            posture_grade=stats.mode(posture_grade_lst)[0][0] # 以一个周期内出现次数最多的状态代表
+            posture_sql = f'''
+            use online_learning;
+            insert into study_state values({student_id},{state_key},{posture_grade},'{now}');
+            '''
+            doSql(posture_sql, option='others')
+
+            state_key = 4
+            focus_sql = f'''
+            use online_learning;
+            insert into study_state values({student_id},{state_key},{focus_grade},'{now}');
+            '''
+            doSql(focus_sql,option='others')
+
+
             print(f'head_pose_score:{head_pose_score}')
             print(f'emotion_score:{emotion_score}')
+            print(f'一个周期疲劳度:{fatigue_lst}')
             print(f'fatigue_score:{fatigue_score}')
             print(f'focus_score:{focus_score}')
             print(f'focus_grade:{focus_grade}')
@@ -202,7 +280,10 @@ if __name__ == '__main__':
             blink_freq = 0  # 眨眼频率
             yawn_freq = 0  # 打哈欠频率
             fatigue_lst = []
+            fatigue_grade_lst=[]
 
+            # 身体姿态
+            posture_grade_lst=[]
             # 表情
             emotion_times_dict = {'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0,
                                   'Sad': 0, 'Surprise': 0, 'Neutral': 0}
@@ -213,10 +294,10 @@ if __name__ == '__main__':
             roll_lst = []
             focus_grade = 5  # 初始专注度等级unknown
 
-        print('处理一帧所需时间:{:.5f}ms'.format(1000 * (time.time() - frame_start_time)))  # 测试模块执行时间
+
         cv2.namedWindow('all', cv2.WINDOW_NORMAL)
         cv2.imshow('all', photo)
-        if cv2.waitKey(1) == 27:  # ESC的ASCII码
+        if cv2.waitKey(1) == 27 :  # ESC的ASCII码
             break
     cap.release()
     cv2.destroyAllWindows()
