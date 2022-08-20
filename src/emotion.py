@@ -4,6 +4,18 @@ import time
 from tensorflow.keras import Sequential
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
+import pymysql
+import datetime
+
+def doSQL(sql):
+    cursor.execute(sql)
+    conn.commit()
+conn = pymysql.connect(host='127.0.0.1',
+                       user='root',
+                       password='123456',
+                       database='online_learning',
+                       charset='UTF8MB4')
+cursor = conn.cursor()
 
 
 model=Sequential()#创建神经网络模型，准备调用.h5文件
@@ -95,12 +107,54 @@ def faceDetectorVideo(img):
     return (x, w, y, h), roi_gray, img
     # 返回人脸矩形参数，压缩人脸灰度图，原图
 
+
+def emotion_database(event_value):#event_value为神经网络输出数字标签
+    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')  # datetime类型
+    event_dic = {0: '3', 1: '5', 2: '8', 3: '6', 4: '4', 5: '7', 10: '1'}
+    state_dic = {0: '3', 1: '3', 2: '1', 3: '2', 4: '3', 5: '2', 10: '0'}
+
+    #写数据表original_event
+    cursor.execute('select count(*) from original_event')
+    count = cursor.fetchone()[0]  # 获取总行数
+    if (count):  # 如果count>0,即表不为空
+        cursor.execute('SELECT event_value FROM original_event limit {},1'.format(count - 1))  # 获取第count行数据
+        event_value_prior = cursor.fetchone()[0]  # 插入前最新，也就是上一条日志的状态flag
+        if (event_dic[event_value] != event_value_prior):
+            doSQL(
+                'INSERT INTO original_event(student_id,event_key,event_value,record_time) '
+                'VALUES("1","2","{}","{}")'.format(
+                    event_dic[event_value], now))  # 数据表中插入新的识别结果
+    else:
+        doSQL(
+            'INSERT INTO original_event(student_id,event_key,event_value,record_time) VALUES("1","2","{}","{}")'.format(
+                event_dic[event_value], now))  # 数据表中插入新的识别结果
+
+    #写study_state数据表
+    cursor.execute('select count(*) from study_state')
+    count = cursor.fetchone()[0]  # 获取总行数
+    if (count):  # 如果count>0,即表不为空
+        cursor.execute('SELECT state_value FROM study_state limit {},1'.format(count - 1))  # 获取第count行数据
+        state_value_prior = cursor.fetchone()[0]  # 插入前最新，也就是上一条日志的状态flag
+        if (state_dic[event_value] != state_value_prior):
+            doSQL(
+                'INSERT INTO study_state(student_id,state_key,state_value,record_time) '
+                'VALUES("1","1","{}","{}")'.format(
+                    state_dic[event_value], now))  # 数据表中插入新的识别结果
+    else:
+        doSQL(
+            'INSERT INTO study_state(student_id,state_key,state_value,record_time) '
+            'VALUES("1","1","{}","{}")'.format(
+                state_dic[event_value], now))  # 数据表中插入新的识别结果
+
+
+
 def emotion_video(cap):
     while True:
         ret, frame = cap.read()
 
         rect, face, image = faceDetectorVideo(frame)
-
+        event_value=10#若保持不变，则没有检测到人脸
+        event_value_db=''
         if np.sum([face]) != 0.0:
             #t = time.time()#测试调用神经网络模型预测时间平均60ms
             roi = face.astype("float") / 255.0
@@ -110,8 +164,8 @@ def emotion_video(cap):
             # 调用神经网络预测，用输出的数字标签查询字典，得到情绪的称呼
 
             preds = classifier.predict(roi)[0]
-
-            label = emotion_dic[preds.argmax()]
+            event_value=preds.argmax()
+            label = emotion_dic[event_value]
             label_position = (rect[0] + rect[1]//50, rect[2] + rect[3]//50)
             text_on_detected_boxes(label, label_position[0], label_position[1], image) # 将情绪文字标注在方框外，对image进行修饰
             fps = cap.get(cv.CAP_PROP_FPS)#获取视频帧率
@@ -120,6 +174,7 @@ def emotion_video(cap):
         else:
             cv.putText(image, "No Face Found", (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
 
+        emotion_database(event_value)#写本地数据库操作
         cv.imshow('all', image)
         if cv.waitKey(1) == 27 or cv.getWindowProperty("all",cv.WND_PROP_AUTOSIZE) != 1:#ESC的ASCII码
             break
