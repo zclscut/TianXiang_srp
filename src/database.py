@@ -31,12 +31,6 @@ def connect():
 
 
 def doSql(sql,option=('query','others')):
-    '''
-    数据库操作
-    :param sql: 一行或多行以;结尾的sql语句
-    :param option: ’query'为查询,'others'包含增加、删除、修改
-    :return:
-    '''
     sql_lst = re.findall('(.*?;)', sql) # 转换成多个单行sql
     # print(sql_lst)
     conn = connect()
@@ -60,10 +54,76 @@ def doSql(sql,option=('query','others')):
         conn.close()
         return data_lst
 
+def original_event_counter(): # original_event的counter查询
+    query_sql = f'''
+    use online_learning;
+    SELECT * FROM original_event ORDER BY counter DESC LIMIT 1;
+    '''
+    result = doSql(query_sql, option='query')
+    if result:
+        counter =result[0][0][0]
+    else:
+        counter = 0
+    return counter
+
+def study_state_counter(): # study_state的counter查询
+    query_sql = f'''
+    use online_learning;
+    SELECT * FROM study_state ORDER BY counter DESC LIMIT 1;
+    '''
+    result = doSql(query_sql, option='query')
+    if result:
+        counter =result[0][0][0]
+    else:
+        counter = 0
+    return counter
 
 
+# original_event插入数据
+def original_event_insert(student_id,emotion_sort,is_pitch, is_yaw, is_roll,is_z_gap,is_y_gap_sh,is_y_head_gap,is_per,\
+                          is_blink,is_yawn,is_close):
+    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    event_value_lst = [emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh, is_y_head_gap, is_per,
+                       is_blink, is_yawn, is_close]
+    event_key_lst = [i for i in range(1, len(event_value_lst) + 1)]
+    for event_key, event_value in zip(event_key_lst, event_value_lst):
+        # 查询最近一次的value值
+        sql = f'''select * from online_learning.original_event where event_key={event_key} order by record_time desc limit 1;'''
+        data = doSql(sql, option='query')
+        if data:
+            value = data[0][0][3]
+        else:
+            value = []
+        counter = original_event_counter()  # 查询original_event表中现有数据行数
+        if value == [] or (value != str(event_value)):
+            emotion_sql = f'''
+            use online_learning;
+            insert into original_event values({counter + 1},{student_id},{event_key},{event_value},'{now}');
+            '''
+            doSql(emotion_sql, option='others')
 
 
+# study_state插入数据
+def study_state_insert(student_id,emotion_grade,fatigue_grade,posture_grade,focus_grade):
+    now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    state_value_lst=[emotion_grade,fatigue_grade,posture_grade,focus_grade]
+    state_key_lst = [i for i in range(1,len(state_value_lst)+1)]
+    for state_key,state_value in zip(state_key_lst,state_value_lst):
+        # 查询最近一周期的value值
+        sql = f'''select * from online_learning.study_state where state_key={state_key} order by record_time desc limit 1;'''
+        data = doSql(sql, option='query')
+        if data:
+            value = data[0][0][3]
+        else:
+            value = []
+        counter = study_state_counter()  # 查询study_state表中现有数据行数
+        if value == [] or (value != str(state_value)):
+            emotion_sql = f'''
+            use online_learning;
+            insert into study_state values({counter + 1},{student_id},{state_key},{state_value},'{now}');
+            '''
+            doSql(emotion_sql, option='others')
 
 
 # 三表查询指令格式
@@ -80,15 +140,6 @@ where 表1.列名=表2.列名 and 表1或表2.列名=表3.列名
 # '''
 # print(excute(sql,option='query'))
 
-# 插入指令
-now=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') # datetime类型
-# for i in range(1,11):
-#     sql = f'''
-#     use online_learning;
-#     insert into study_state values(1,{i},1,'{now}');
-#     '''
-#     excute(sql, option='others')
-
 # 删除
 # sql='''
 # use online_learning;
@@ -97,8 +148,26 @@ now=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') # datetime类型
 # doSql(sql,option='others')
 
 # 插入数据
-# sql = f'''
+now=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') # datetime类型
+# query_sql = f'''
 # use online_learning;
-# insert into study_state values(1,1,1,'{now}');
+# SELECT * FROM study_state ORDER BY counter DESC LIMIT 1;
 # '''
-# doSql(sql, option='others')
+# query_result = doSql(query_sql, option='query')
+# if query_result:
+#     counter = query_result[0][0][0]
+#     value=query_result[0][0][3]
+# else:
+#     counter = 0
+#     value=[]
+# insert_sql = f'''
+# use online_learning;
+# INSERT INTO study_state values ({counter + 1}, '1', '1', '1', '{now}');
+# '''
+# doSql(insert_sql, option='query')
+
+
+
+
+
+

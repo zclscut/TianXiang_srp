@@ -6,15 +6,17 @@ detect_cost_time为检测一轮消耗总时长
 import time
 import cv2
 import numpy as np
-from ConcentrationAnalysis.head_pose_functions import  estimate_head_pose
-
+from ConcentrationAnalysis.head_pose_functions import estimate_head_pose
 
 # 模型初始化
 # t0=time.time()
 from lib.head_pose_model.FaceDetection.FaceBoxes_ONNX import FaceBoxes_ONNX  # 人脸检测
 from lib.head_pose_model.FaceAlignment3D.TDDFA_ONNX import TDDFA_ONNX  # 人脸的3D标志点检测
+
 face_boxes = FaceBoxes_ONNX()
 tddfa = TDDFA_ONNX()
+
+
 # t1=time.time()
 # print(f'模型初始化时间:{round((t1-t0)*1000,2)}ms')
 
@@ -54,6 +56,10 @@ def draw_pose(img, directions_lst, bound_box_lst, landmarks_lst, show_bbox=False
 
 
 def get_euler_angle(frame):
+    # 没有检测到人脸时,默认pitch,yaw,yaw参数均大于阈值
+    is_pitch = 1
+    is_yaw = 1
+    is_roll = 1
     try:
         t0 = time.time()
         bboxes = face_boxes(frame)  # 每一帧中脸部数据构成的ndarry
@@ -67,6 +73,15 @@ def get_euler_angle(frame):
         t1 = time.time()
 
         roll, yaw, pitch = euler_angle_lst[-1]  # 选取左边第一张脸
+        is_pitch = 0
+        is_yaw = 0
+        is_roll = 0
+        if abs(pitch)>20:
+            is_pitch=1
+        if abs(yaw)>20:
+            is_yaw=1
+        if abs(roll)>20:
+            is_roll=1
         # print(f'roll: {roll}, yaw: {yaw}, pitch: {round(pitch)} cost time: {round((t1 - t0) * 1000, 2)}ms')
         # cv2.putText(frame, f'pitch: {round(pitch, 2)}', (80, 100), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
         #             fontScale=0.8, color=(0, 0, 255), thickness=2)
@@ -82,10 +97,11 @@ def get_euler_angle(frame):
             landmarks_lst, )
 
     except:  # 未检测到人脸时候返回原始图片
-        pitch, yaw, roll=100,100,100
-        return pitch,yaw,roll, frame
+        pitch, yaw, roll = 100, 100, 100
+        is_pitch,is_yaw,is_roll=1,1,1
+        return pitch, yaw, roll, is_pitch, is_yaw, is_roll, frame
     else:
-        return pitch,yaw,roll, modified_frame
+        return pitch, yaw, roll, is_pitch, is_yaw, is_roll, modified_frame
 
 
 def get_emotion_score(emotion_times_dict):
@@ -116,58 +132,51 @@ def get_emotion_score(emotion_times_dict):
     return round(emotion_score / 0.5, 2), emotion_sort
 
 
-def get_head_pose_score(pitch_lst,yaw_lst,roll_lst):
+def get_head_pose_score(pitch_lst, yaw_lst, roll_lst):
     # 头部姿态角取三者最大值
+    head_pose_score = 0
     try:
         pitch_ave = sum(pitch_lst) / len(pitch_lst)
         yaw_ave = sum(yaw_lst) / len(yaw_lst)
         roll_ave = sum(roll_lst) / len(roll_lst)
+
+        if max(pitch_ave,yaw_ave,roll_ave)<=10:
+            head_pose_score = 0.9
+        if 10<max(pitch_ave,yaw_ave,roll_ave)<=15:
+            head_pose_score = 0.7
+        if 15<max(pitch_ave,yaw_ave,roll_ave)<=20:
+            head_pose_score = 0.4
+        if max(pitch_ave,yaw_ave,roll_ave)>20:
+            head_pose_score=0.2
     except:
-        head_pose_score = 0  # 没有检测到人脸
-        pitch_ave=20
-        roll_ave=40
-        yaw_ave=20
+        head_pose_score = 0  # 一周期没有检测到人脸
+        pitch_ave = 20
+        roll_ave = 20
+        yaw_ave = 20
     else:
-        if pitch_ave > 15:  # 抬头/低头角度大于15度,权重视为0,得分为0
-            pitch_weight = 0
-        else:
-            pitch_weight = 1 - pitch_ave/15
-        if yaw_ave > 40:  # 左/右转头角度大于40度,权重视为0,得分为0
-            yaw_weight = 0
-        else:
-            yaw_weight = 1 - yaw_ave/40
-        if roll_ave > 20:
-            roll_weight =0
-        else:
-            roll_weight = 1 - roll_ave/20
-        head_pose_score=min(pitch_weight,yaw_weight,roll_weight)
-    return  round(head_pose_score,2),round(pitch_ave,2),round(yaw_ave,2),round(roll_ave,2) # 头部姿态评分权重
+       pass
+
+    return round(head_pose_score, 2), round(pitch_ave, 2), round(yaw_ave, 2), round(roll_ave, 2)  # 头部姿态评分权重
 
 
 def get_fatigue_score(fatigue):
     # 确定疲劳等级提示:小于0.15为清醒，0.15-0.35临界状态，0.35-0.5轻度疲劳，0.5-0.6中度疲劳，大于0.6重度疲劳
-    fatigue_score=1-fatigue
-    if fatigue>1:
-        fatigue_score=0
-    return round(fatigue_score,2)
+    fatigue_score = 1 - fatigue
+    if fatigue > 1:
+        fatigue_score = 0
+    return round(fatigue_score, 2)
 
 
-def concentrationFrameDetect(faces,gray, photo):#frame为摄像头原图，photo是绘制过的图片，在别的模块绘制的基础上再次绘制输出
-    frame=photo
-    pitch,yaw,roll,photo=get_euler_angle(frame)
-    return pitch,yaw,roll,photo
 
 if __name__ == '__main__':
-    cap=cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)
     while cap.isOpened():
-        ret,frame=cap.read()
+        ret, frame = cap.read()
         if ret:
-            pitch, yaw, roll, frame = get_euler_angle(frame)
-        cv2.namedWindow('Frame',cv2.WINDOW_NORMAL)
-        cv2.imshow('Frame',frame)
-        if cv2.waitKey(1)==27:
+            pitch, yaw, roll, is_pitch, is_yaw, is_roll, frame = get_euler_angle(frame)
+            print(pitch, yaw, roll, is_pitch, is_yaw, is_roll)
+        cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
+        cv2.imshow('Frame', frame)
+        if cv2.waitKey(1) == 27:
             cv2.destroyAllWindows()
             break
-
-
-

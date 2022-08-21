@@ -8,8 +8,7 @@ from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetectCopy as posture_detect
 from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score
 from fatigue import ear_mar, eye_params, mouth_params, get_fatigue, get_fatigue_grade, add_text
-from ConcentrationAnalysis.head_pose_estimation_plus import get_head_pose_estimate_frame  # 获取pitch,yaw
-from database import doSql # 数据库操作类的库
+from database import doSql,original_event_counter,study_state_counter,original_event_insert,study_state_insert # 数据库操作类的库
 
 # 表情组人脸识别模型加载
 face_detector = cv2.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
@@ -88,9 +87,9 @@ def get_focus_score(head_pose_score, emotion_score, fatigue_score):
 
     if focus_score < 0.45:
         focus_grade = 4
-    elif 0.45 <= focus_score < 0.65:
+    elif 0.45 <= focus_score < 0.6:
         focus_grade = 3
-    elif 0.65 <= focus_score < 0.7:
+    elif 0.6 <= focus_score < 0.7:
         focus_grade = 2
     else:
         focus_grade = 1
@@ -115,30 +114,32 @@ if __name__ == '__main__':
         emotion_times_dict[emotion_dic[emoFlag]] = emotion_times_dict[emotion_dic[emoFlag]] + 1
 
         # --------身体姿态模块-----------
-        isPosture, posture_grade, photo=posture_detect(frame,photo)
+        is_z_gap,is_y_gap_sh,is_y_head_gap,is_per,isPosture,posture_grade,photo=posture_detect(frame,photo)
         posture_grade_lst.append(posture_grade)
 
         # --------疲劳度模块------------
         rects = detector(gray, 0)  # 这个地方重复,但换成前面的rects会出错
-        # 第七步：循环脸部位置信息，使用predictor(gray, rect)获得脸部特征位置的信息
+        # 未检测到人脸,pitch/yaw/roll默认超过阈值;默认没有眨眼/打哈欠/闭眼
+        is_pitch=1
+        is_yaw=1
+        is_roll=1
+        is_blink=0
+        is_yawn=0
+        is_close=0
         for rect in rects:
             # 计算ear,mar
             ear, mar = ear_mar(gray, rect)
 
             # 第十三步：循环，满足条件的，眨眼次数+1
-            ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames = eye_params(ear, \
-                                                                                                            eye_conti_frames,
-                                                                                                            step_frames,
-                                                                                                            blink_times,
-                                                                                                            eye_close_times,
-                                                                                                            eye_close_frames)
+            ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames,is_blink,is_close = \
+                eye_params(ear, eye_conti_frames,step_frames,blink_times,eye_close_times, eye_close_frames)
 
             # 眨眼频率
             blink_freq = blink_times / period_frames
             # perclose
             perclose = eye_close_frames / period_frames
             # 同理，判断是否打哈欠
-            mar, mouth_conti_frames, step_frames, yawn_times = mouth_params(mar, mouth_conti_frames, step_frames,
+            mar, mouth_conti_frames, step_frames, yawn_times,is_yawn = mouth_params(mar, mouth_conti_frames, step_frames,
                                                                             yawn_times)
             # 打哈欠频率
             yawn_freq = yawn_times / period_frames
@@ -156,7 +157,7 @@ if __name__ == '__main__':
                          yawn_freq, eye_close_times, perclose, rects, frame_counter, fatigue, fatigue_grade)
 
             # --------专注度模块-----------
-            pitch, yaw, roll, photo = get_euler_angle(photo)
+            pitch, yaw, roll, is_pitch, is_yaw, is_roll, photo = get_euler_angle(photo)
             pitch_lst.append(abs(pitch))
             yaw_lst.append(abs(yaw))
             roll_lst.append(abs(roll))
@@ -167,16 +168,14 @@ if __name__ == '__main__':
         if t_1s >= 1000:  # 1s计时结束,写入一次原始数据
             # --------1s写一次原始数据---------
             # now 是待插入数据库的record_time字段
-            now=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            print(now)
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             t_1s=0
+            student_id=1
+            emotion_sort=emoFlag
 
-            # 插入数据
-            sql = f'''
-            use online_learning;
-            insert into study_state values(2,2,2,'{now}');
-            '''
-            # doSql(sql, option='others')
+            # 插入原始数据
+            original_event_insert(student_id, emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
+                                  is_y_head_gap, is_per, is_blink,is_yawn,is_close)
 
         if frame_counter == period_frames:  # 一个计数周期结束
             i += 1
@@ -206,42 +205,16 @@ if __name__ == '__main__':
 
             # --------周期数据写入数据库study_state------------
             # values中参数依次为student_id,state_key,state_value,record_time
+
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             student_id=1  # 暂默认为1
 
-            state_key=1
-            emotion_sql = f'''
-            use online_learning;
-            insert into study_state values({student_id},{state_key},{emotion_grade},'{now}');
-            '''
-            doSql(emotion_sql, option='others')
+            # 每个周期插入数据
+            study_state_insert(student_id,emotion_grade,fatigue_grade,posture_grade,focus_grade)
 
-            state_key = 2
-            fatigue_sql = f'''
-            use online_learning;
-            insert into study_state values({student_id},{state_key},{fatigue_grade},'{now}');
-            '''
-            doSql(fatigue_sql, option='others')
-
-            state_key=3
-            posture_grade=stats.mode(posture_grade_lst)[0][0] # 以一个周期内出现次数最多的状态代表
-            posture_sql = f'''
-            use online_learning;
-            insert into study_state values({student_id},{state_key},{posture_grade},'{now}');
-            '''
-            doSql(posture_sql, option='others')
-
-            state_key = 4
-            focus_sql = f'''
-            use online_learning;
-            insert into study_state values({student_id},{state_key},{focus_grade},'{now}');
-            '''
-            doSql(focus_sql,option='others')
-
-
+            print(f'pitch_ave:{pitch_ave},yaw_ave:{yaw_ave},roll_ave:{roll_ave}')
             print(f'head_pose_score:{head_pose_score}')
             print(f'emotion_score:{emotion_score}')
-            print(f'一个周期疲劳度:{fatigue_lst}')
             print(f'fatigue_score:{fatigue_score}')
             print(f'focus_score:{focus_score}')
             print(f'focus_grade:{focus_grade}')
@@ -294,8 +267,7 @@ if __name__ == '__main__':
             roll_lst = []
             focus_grade = 5  # 初始专注度等级unknown
 
-
-        cv2.namedWindow('all', cv2.WINDOW_NORMAL)
+        # cv2.namedWindow('all', cv2.WINDOW_NORMAL)
         cv2.imshow('all', photo)
         if cv2.waitKey(1) == 27 :  # ESC的ASCII码
             break

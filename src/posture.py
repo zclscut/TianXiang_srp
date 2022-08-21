@@ -111,7 +111,15 @@ def postureFrameDetectCopy(frame,photo):
     photo, results = findPose(photo, False)
     lmList = findPosition(photo, results, False)
     isPosture = 0
-    posture_grade=1 # 坐姿正常
+    posture_grade=1 # 没有检测到身体坐标,默认坐姿正常
+
+    # is_参数为0表示没有超过阈值,为1表示超过阈值
+    # 没有检测到身体坐标时候默认为没有超过阈值
+    is_z_gap=0
+    is_y_head_gap=0
+    is_y_gap_sh = 0
+
+    is_per = 0  # 为100表明没有超过阈值,不为100则超过阈值
 
     if len(lmList) != 0:
 
@@ -125,42 +133,51 @@ def postureFrameDetectCopy(frame,photo):
         z_gap = z_avg - z1
         y_head_gap = y4 - y5
         # 判断头部是否往前
+        is_z_gap = 0
         if z_gap > 40:
+            is_z_gap=1
             # 判断是否低头
+            is_per = 1
             if per == 100:
+                is_per=0
                 # 脸部朝前
                 if y_head_gap < 30:
                     cv2.putText(photo, f'Head_Up', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
                                 (255, 0, 0), 3)
                     isPosture = 1
                     posture_grade = 2 # Head_Up脸部朝前
+                    is_y_head_gap=0
                 # 脸部朝下
                 else:
                     cv2.putText(photo, f'Head_Ahead', (50, 100), cv2.FONT_HERSHEY_PLAIN, 3,
                                 (255, 0, 0), 3)
                     isPosture = 1
                     posture_grade=3 # Head_Ahead脸部朝下
+                    is_y_head_gap=1
 
         # 检查左右倾斜
         y_gap_sh = y2 - y3
         y_gap_sh = abs(y_gap_sh)
+        is_y_gap_sh = 0
         if y_gap_sh > 25:
             cv2.putText(photo, f'Body_Lean', (50, 150), cv2.FONT_HERSHEY_PLAIN, 3,
                         (255, 0, 0), 3)
             isPosture = 1
             posture_grade = 4  # Body_Lean身体倾斜
+            is_y_gap_sh=1 # 超出阈值
 
     # 显示图像
-    return isPosture,posture_grade, photo
+    return is_z_gap,is_y_gap_sh,is_y_head_gap,is_per,isPosture,posture_grade,photo
 
 def run():
     cap = cv2.VideoCapture(0)
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
-            isPosture,posture, photo = postureFrameDetectCopy(frame,frame)
+            is_z_gap, is_y_gap_sh, is_y_head_gap, is_per, isPosture, posture_grade, photo =\
+                postureFrameDetectCopy(frame,frame)
+            print(is_z_gap, is_y_gap_sh, is_y_head_gap, is_per, isPosture, posture_grade)
             cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
-            print(posture)
             cv2.imshow('Frame', photo)
             if cv2.waitKey(1) == 27:
                 break

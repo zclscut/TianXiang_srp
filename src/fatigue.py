@@ -69,28 +69,35 @@ def ear_mar(gray, rect):
 
 # 眼部参数
 def eye_params(ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames):
+    # 检测一次没有眨眼/闭眼
+    is_blink=0
+    is_close=0
     if ear < 0.22:  # 眼睛长宽比：0.22
         eye_conti_frames += 1
     else:
         # 如果小于阈值，则表示进行了一次眨眼活动
         if 1 <= eye_conti_frames < step_frames:  # 阈值：1-10,眨眼
             blink_times += 1
+            is_blink=1
 
         # 如果连续10次都小于阈值，则表示进行了一次闭眼活动
         if eye_conti_frames >= step_frames:  # 阈值：10，闭眼
             eye_close_times += 1  # 周期内闭眼总次数
+            is_close=1
             # 周期内连续闭眼总帧数
             eye_close_frames += eye_conti_frames
 
         # ear大于阈值,重置眼帧计数器
         eye_conti_frames = 0
-    return ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames
+    return ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames,is_blink,is_close
 
 # 嘴部参数
 def mouth_params(mar, mouth_conti_frames, step_frames, yawn_times):
     '''
         计算张嘴评分，如果小于阈值，则加1，如果连续3次都小于阈值，则表示打了一次哈欠，同一次哈欠大约在3帧
     '''
+    # 默认没有打哈欠
+    is_yawn=0
     if mar > 0.6:  # 张嘴阈值0.6
         mouth_conti_frames += 1
         # cv2.putText(frame, "Yawning!", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
@@ -98,9 +105,11 @@ def mouth_params(mar, mouth_conti_frames, step_frames, yawn_times):
         # 如果连续10次都小于阈值，则表示打了一次哈欠
         if mouth_conti_frames >= step_frames:  # 阈值：10
             yawn_times += 1
+            is_yawn=1
         # 嘴巴mar大于阈值,重置嘴帧计数器
         mouth_conti_frames = 0
-    return mar, mouth_conti_frames, step_frames, yawn_times
+
+    return mar, mouth_conti_frames, step_frames, yawn_times,is_yawn
 
 # 获取疲劳度
 def get_fatigue(blink_freq, yawn_freq, perclose, eye_close_times):
