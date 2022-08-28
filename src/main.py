@@ -100,7 +100,7 @@ if __name__ == '__main__':
 
         ret, frame = cap.read()
         rect, roi_gray, gray = faceDetectorVideo(frame)  # 输出人脸矩形坐标，压缩人脸灰度图
-        emoFlag, photo = emotion_detect(rect, roi_gray, frame, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片frame
+        emoFlag, photo = emotion_detect(rect, roi_gray, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片frame
         ''' emoFlag没有检测到人脸时候返回0'''
         # print(f'emoFlag:{emoFlag}')
 

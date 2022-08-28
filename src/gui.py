@@ -7,7 +7,7 @@ import numpy as np
 from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetect as posture_detect
 from fatigue_ui import fatigueFrameDetectDraw as fatigue_detect
-from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score, get_focus_score
+from concentration import concentrationFrameDetect as concentration_detect
 
 face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
 def faceDetectorVideo(img):
@@ -230,12 +230,15 @@ class MainCode(QMainWindow, Ui_MainWindow):
         self.pushButton_2.clicked.connect(self.xflag_2)
         self.pushButton_3.clicked.connect(self.xflag_3)
         self.pushButton_4.clicked.connect(self.xflag_4)
-        self.fatigueframe=0
-        self.fatigueframemax=1000#连续检测1000帧
-        self.fatiguedatatuple=(0,0,0,0,0,0,0,0,0,0)
+        self.framecounter=0
+        self.framecountermax=100#连续检测1000帧
+        self.fatiguedatatuple =(0,0,0,0,0,0,0,0,0,0,0)
+        self.scoretuple=(0,0,0,0,0)
+        self.concentrationdatatuple=({'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0, 'Sad': 0, 'Surprise': 0, 'Neutral': 0, },
+                                     [],[],[],[],[])
     def xflag(self):
-        self.fatigueframe = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        self.framecounter = 0
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         print(self.buttonFlag)
         if self.buttonFlag==0:
             self.buttonFlag=1
@@ -244,8 +247,8 @@ class MainCode(QMainWindow, Ui_MainWindow):
             self.buttonFlag=0
             #self.pushButton.setText('close')
     def xflag_2(self):
-        self.fatigueframe = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        self.framecounter = 0
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         print(self.buttonFlag)
         if self.buttonFlag==0:
             self.buttonFlag=2
@@ -254,8 +257,8 @@ class MainCode(QMainWindow, Ui_MainWindow):
             self.buttonFlag=0
             #self.pushButton_2.setText('close')
     def xflag_3(self):
-        self.fatigueframe = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        self.framecounter = 0
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         print(self.buttonFlag)
         if self.buttonFlag==0:
             self.buttonFlag=3
@@ -264,8 +267,8 @@ class MainCode(QMainWindow, Ui_MainWindow):
             self.buttonFlag=0
             #self.pushButton_3.setText('close')
     def xflag_4(self):
-        self.fatigueframe = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        self.framecounter = 0
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
         print(self.buttonFlag)
         if self.buttonFlag==0:
             self.buttonFlag=4
@@ -277,22 +280,33 @@ class MainCode(QMainWindow, Ui_MainWindow):
     def paintEvent(self, a0: QPaintEvent):
         ret,frame=self.camera.read()
         frame = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
-        self.fatigueframe+=1
-        if self.fatigueframe==self.fatigueframemax:#疲劳分析需要连续分析1000帧,计算1000帧以内的闭眼时长、眨眼频率、打哈欠频率
-            self.fatigueframe=0
-            self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        if self.buttonFlag==1:#按下情绪识别按钮
+        self.framecounter+=1
+        # 疲劳分析需要连续分析1000帧,计算1000帧以内的闭眼时长、眨眼频率、打哈欠频率
+        if self.framecounter==self.framecountermax:
+            self.framecounter=0
+            self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+            self.concentrationdatatuple=({'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0, 'Sad': 0, 'Surprise': 0, 'Neutral': 0, },
+                                     [],[],[],[],[])
+        # 按下情绪识别按钮
+        if self.buttonFlag==1:
             rect, roi_gray, gray = faceDetectorVideo(frame)  # 输出人脸矩形坐标，压缩人脸灰度图
-            emoFlag, photo = emotion_detect(rect, roi_gray, frame, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片
+            emoFlag, photo = emotion_detect(rect, roi_gray, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片
             self.QImage=QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
-        elif self.buttonFlag==4:#按下姿势识别按钮
+        # 按下姿势识别按钮
+        elif self.buttonFlag==4:
             headPosture,photo=posture_detect(frame,frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
-        elif self.buttonFlag==3:#按下疲劳分析按钮
-            self.fatiguedatatuple,self.fatigueframe,photo=fatigue_detect(self.fatiguedatatuple,self.fatigueframe,frame)
+        # 按下疲劳分析按钮
+        elif self.buttonFlag==3:
+            self.fatiguedatatuple,photo=fatigue_detect(self.fatiguedatatuple,self.framecounter,frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
-        elif self.buttonFlag==2:#按下专注度分析按钮
-            focus_score, focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
+        # 按下专注度分析按钮
+        elif self.buttonFlag==2:
+            self.scoretuple,self.fatiguedatatuple,photo=\
+                concentration_detect(self.concentrationdatatuple,self.scoretuple,
+                                     self.fatiguedatatuple,self.framecounter,
+                                     self.framecountermax,frame)
+            self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
         else:
             self.QImage = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
         self.img_label.setPixmap(QPixmap.fromImage(self.QImage))

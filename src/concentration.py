@@ -7,6 +7,10 @@ import time
 import cv2
 import numpy as np
 from ConcentrationAnalysis.head_pose_functions import estimate_head_pose
+from emotion import emotionFrameDetect as emotion_detect
+from emotion import faceDetectorVideo as face_detect
+from emotion import emotion_dic
+from fatigue_ui import fatigueFrameDetectDraw as fatigue_detect
 
 # 模型初始化
 # t0=time.time()
@@ -181,56 +185,79 @@ def get_focus_score(head_pose_score, emotion_score, fatigue_score):
 
     return round(focus_score, 2),focus_grade
 
-def concentrationFrameDetect(photo,emotion_times_dict,fatigue_lst,fatigue_grade_lst,pitch_lst,yaw_lst,roll_lst):
-    # 头部得分
-    head_pose_score, pitch_ave, yaw_ave, roll_ave = get_head_pose_score(pitch_lst, yaw_lst, roll_lst)
-    # 疲劳得分
-    '''一个周期都没有检测到人脸,疲劳度？'''
-    if fatigue_lst:
-        fatigue_score = get_fatigue_score(fatigue_lst[-1])  # 最后一次的fatigue代表一个周期的疲劳度
-        fatigue_grade = fatigue_grade_lst[-1]
-    else:
-        if pitch_ave < 15:  # 低头/抬头检测不到人脸的临界角
-            fatigue = 1  # 严重疲劳状态
-            fatigue_grade = 5
+def concentrationFrameDetect(concentrationdatatuple,scoretuple,fatiguedatatuple,framecounter,framecountermax,frame):
+    (head_pose_score, emotion_score,
+     fatigue_score, focus_score, focus_grade)=scoretuple
+    (emotion_times_dict, fatigue_lst,
+     fatigue_grade_lst, pitch_lst,
+     yaw_lst, roll_lst) = concentrationdatatuple
+    if framecounter==framecountermax-1:
+
+        # 头部得分
+        head_pose_score, pitch_ave, yaw_ave, roll_ave = get_head_pose_score(pitch_lst, yaw_lst, roll_lst)
+        # 疲劳得分
+        '''一个周期都没有检测到人脸,疲劳度？'''
+        if fatigue_lst:
+            fatigue_score = get_fatigue_score(fatigue_lst[-1])  # 最后一次的fatigue代表一个周期的疲劳度
+            fatigue_grade = fatigue_grade_lst[-1]
         else:
-            fatigue = 0.5  # 人已经不在镜头视线范围,默认中度疲劳
-            fatigue_grade = 4
-        fatigue_score = 1 - fatigue  # 疲劳分数正向化
+            if pitch_ave < 15:  # 低头/抬头检测不到人脸的临界角
+                fatigue = 1  # 严重疲劳状态
+                fatigue_grade = 5
+            else:
+                fatigue = 0.5  # 人已经不在镜头视线范围,默认中度疲劳
+                fatigue_grade = 4
+            fatigue_score = 1 - fatigue  # 疲劳分数正向化
 
-    # 表情得分
-    emotion_score, emotion_sort = get_emotion_score(emotion_times_dict)
-    emotion_sort_dict = {'optimistic': 1, 'neutral': 2, 'negative': 3}
-    emotion_grade = emotion_sort_dict[emotion_sort]  # 情绪等级
+        # 表情得分
+        emotion_score, emotion_sort = get_emotion_score(emotion_times_dict)
+        emotion_sort_dict = {'optimistic': 1, 'neutral': 2, 'negative': 3}
+        emotion_grade = emotion_sort_dict[emotion_sort]  # 情绪等级
 
-    # 专注度得分
-    focus_score, focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
+        # 专注度得分
+        focus_score, focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
+        scoretuple = (head_pose_score, emotion_score, fatigue_score, focus_score, focus_grade)
 
-    # --------周期数据写入数据库study_state------------
-    # values中参数依次为student_id,state_key,state_value,record_time
+    # --------表情模块模块-----------
+    #识别情绪，对应情绪类别频次+1
+    rect, roi_gray, gray = face_detect(frame)
+    emoFlag= emotion_detect(rect, roi_gray, frame)[0]
+    emotion_times_dict[emotion_dic[emoFlag]] += 1
 
+    # --------疲劳度模块------------
+    fatiguedatatuple=fatigue_detect(fatiguedatatuple, framecounter, frame)[0]
+    fatigue_lst.append(fatiguedatatuple[1])#即疲劳分析的fatigue
+    fatigue_grade_lst.append(fatiguedatatuple[0])#即疲劳分析的fatigue_grade
 
-    print(f'pitch_ave:{pitch_ave},yaw_ave:{yaw_ave},roll_ave:{roll_ave}')
-    print(f'head_pose_score:{head_pose_score}')
-    print(f'emotion_score:{emotion_score}')
-    print(f'fatigue_score:{fatigue_score}')
-    print(f'focus_score:{focus_score}')
-    print(f'focus_grade:{focus_grade}')
+    # --------专注度模块-----------
+    pitch, yaw, roll, is_pitch, is_yaw, is_roll, photo = get_euler_angle(frame)
+    photo=frame#get_euler_angle输出的photo包含人脸框，我们不想要这个框
+    pitch_lst.append(abs(pitch))
+    yaw_lst.append(abs(yaw))
+    roll_lst.append(abs(roll))
 
-    cv2.putText(photo, f'head_pose_score:{head_pose_score}', (20, 200), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=1, color=(0, 0, 255), thickness=3)
-    cv2.putText(photo, f'emotion_score:{emotion_score}', (20, 240), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=1, color=(0, 0, 255), thickness=3)
-    cv2.putText(photo, f'fatigue_score:{fatigue_score}', (20, 280), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=1, color=(0, 0, 255), thickness=3)
-    cv2.putText(photo, f'focus_score:{focus_score}', (20, 320),
+    # --------分数评级显示-----------
+    text_x=20
+    text_y=50
+    textcolor=(255, 255, 0)
+
+    cv2.putText(photo, f'head_pose_score:{head_pose_score}', (text_x, text_y), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=textcolor, thickness=2)
+    cv2.putText(photo, f'emotion_score:{emotion_score}', (text_x, text_y+40), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=textcolor, thickness=2)
+    cv2.putText(photo, f'fatigue_score:{fatigue_score}', (text_x, text_y+40*2), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=textcolor, thickness=2)
+    cv2.putText(photo, f'focus_score:{focus_score}', (text_x, text_y+40*3),
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=1, color=(0, 0, 255), thickness=3)
-    cv2.putText(photo, f'focus_grade:{focus_grade}', (20, 360),
+                fontScale=1, color=textcolor, thickness=2)
+    cv2.putText(photo, f'focus_grade:{focus_grade}', (text_x, text_y+40*4),
                 fontFace=cv2.FONT_HERSHEY_SIMPLEX,
-                fontScale=1, color=(0, 0, 255), thickness=3)
+                fontScale=1, color=textcolor, thickness=2)
+    cv2.putText(photo, "framecounter: {}".format(framecounter), (text_x, text_y+40*5),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
 
-    return photo
+
+    return scoretuple,fatiguedatatuple,photo
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)

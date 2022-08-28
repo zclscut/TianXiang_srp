@@ -62,10 +62,10 @@ predictor = dlib.shape_predictor(
 (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 (mStart, mEnd) = face_utils.FACIAL_LANDMARKS_IDXS["mouth"]
 
-def fatigueFrameDetectDraw(datatuple,frametimes,frame):  # frame为摄像头原图，photo是绘制过的图片，在别的模块绘制的基础上再次绘制输出
+def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头原图，photo是绘制过的图片，在别的模块绘制的基础上再次绘制输出
 
 
-    (FATIGUE, COUNTER, TOTAL, eTOTAL, PERCLOSE, mCOUNTER, mTOTAL, eTime, eFre, mFre) = datatuple
+    (FATIGUEGRADE,FATIGUE,COUNTER,TOTAL,eTOTAL,PERCLOSE,mCOUNTER,mTOTAL,eTime,eFre,mFre)= datatuple
 
     # 计算1000帧以内的闭眼时长、眨眼频率、打哈欠频率
 
@@ -109,7 +109,7 @@ def fatigueFrameDetectDraw(datatuple,frametimes,frame):  # frame为摄像头原�
         right = rect.right()
         bottom = rect.bottom()
         #cv2.rectangle(frame, (left, top), (right, bottom), (0, 255, 0), 1)#框出人脸
-        #frametimes+=1
+        #framecounter+=1
         '''
             分别计算左眼和右眼的评分求平均作为最终的评分，如果小于阈值，则表示进行了一次眨眼活动,如果连续10次都小于阈值，则表示进行了一次闭眼活动
         '''
@@ -146,7 +146,7 @@ def fatigueFrameDetectDraw(datatuple,frametimes,frame):  # frame为摄像头原�
                     2)
         cv2.putText(frame, "Perclose: {}".format(PERCLOSE), (550, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
                     (255, 255, 0), 2)
-        cv2.putText(frame, "frame: {}".format(frametimes), (550, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
+        cv2.putText(frame, "frame: {}".format(framecounter), (550, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 0), 2)
         '''
             计算张嘴评分，如果小于阈值，则加1，如果连续3次都小于阈值，则表示打了一次哈欠，同一次哈欠大约在3帧
         '''
@@ -171,12 +171,24 @@ def fatigueFrameDetectDraw(datatuple,frametimes,frame):  # frame为摄像头原�
 
         '''
             综合眨眼评分和张嘴评分，由眨眼频率、打哈欠频率、闭眼时长和闭眼次数计算疲劳程度评分
-                    '''
-        FATIGUE = 1 / 2.6 * float(
-            (0.3 * (2 * abs(float(eFre) - 0.5)) + 0.5 * float(mFre) + float(PERCLOSE) + 0.8 * float(eTOTAL)))
+        '''
+        FATIGUE = 1 / 2.6 * float((0.3 * (2 * abs(float(eFre) - 0.5)) + 0.5 * float(mFre)
+                                   + float(PERCLOSE) + 0.8 * float(eTOTAL)))
+        
+        
         cv2.putText(frame, "Fatigue: {}".format(FATIGUE), (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
                     (255, 255, 0), 2)
 
+        if FATIGUE < 0.15:
+            FATIGUEGRADE = 1
+        elif FATIGUE >= 0.15 and FATIGUE < 0.35:
+            FATIGUEGRADE = 2
+        elif FATIGUE >= 0.35 and FATIGUE < 0.5:
+            FATIGUEGRADE = 3
+        elif FATIGUE >= 0.5 and FATIGUE < 0.6:
+            FATIGUEGRADE = 4
+        else:  # elif fatigue >= 0.6:
+            FATIGUEGRADE = 5
         '''
         # 第十六步：进行画图操作，68个特征点标识
         for (x, y) in shape:
@@ -199,9 +211,9 @@ def fatigueFrameDetectDraw(datatuple,frametimes,frame):  # frame为摄像头原�
 
     # 窗口显示 show with opencv
     photo = frame
-    datatuple = (FATIGUE, COUNTER, TOTAL, eTOTAL, PERCLOSE, mCOUNTER, mTOTAL, eTime, eFre, mFre)
+    datatuple = (FATIGUEGRADE,FATIGUE, COUNTER, TOTAL, eTOTAL, PERCLOSE, mCOUNTER, mTOTAL, eTime, eFre, mFre)
     photo = imutils.resize(photo, width=1280)#摄像头画面大小默认为1920*1280，检测缩小图片减少运算时间 ，播放再恢复原有大小
-    return datatuple, frametimes,photo  # 输出识别标签，已经再绘制的图片
+    return datatuple,photo  # 输出识别标签，已经再绘制的图片
 
 
 
