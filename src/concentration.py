@@ -103,11 +103,11 @@ def get_euler_angle(frame):
     else:
         return pitch, yaw, roll, is_pitch, is_yaw, is_roll, modified_frame
 
-
+#输入各种情绪频次检测表
 def get_emotion_score(emotion_times_dict):
-    down_dict = sorted(emotion_times_dict.items(), key=lambda x: x[1], reverse=True)  # 降序
+    down_dict = sorted(emotion_times_dict.items(), key=lambda x: x[1], reverse=True)  # 在多帧检测中，根据各种情绪检测频次降序
     print(f'emotion_times_lst:{down_dict}')
-    emotion_sort_dict = {'optimistic': 0, 'neutral': 0, 'negative': 0}
+    emotion_sort_dict = {'optimistic': 0, 'neutral': 0, 'negative': 0}#三类情绪的频次统计表
     for key, value in emotion_times_dict.items():  # 转换为三类情绪
         if key == 'Happy':
             emotion_sort_dict['optimistic'] = value
@@ -115,13 +115,15 @@ def get_emotion_score(emotion_times_dict):
             emotion_sort_dict['neutral'] = emotion_sort_dict['neutral'] + value
         else:
             emotion_sort_dict['negative'] = emotion_sort_dict['negative'] + value
-    times_lst = [value for key, value in emotion_sort_dict.items()]
+    times_lst = [value for key, value in emotion_sort_dict.items()]#列表的样子示例：[503,401,96]
 
     # 以一个周期内出现情绪次数类别最多组划分情绪类别
     down_emotion_sort_lst = sorted(emotion_sort_dict.items(), key=lambda x: x[1], reverse=True)
-    emotion_sort = down_emotion_sort_lst[0][0]
+    emotion_sort = down_emotion_sort_lst[0][0]#消极，积极，中性三种情绪之中，频次最高的情绪名称
     try:
         for key, value in emotion_sort_dict.items():  # 归一化
+            # emotion_sort_dict{'optimistic': 503, 'neutral': 401, 'negative': 96}
+            # 转化为{'optimistic': 0.503, 'neutral': 0.401, 'negative': 0.096}
             emotion_sort_dict[key] = value / sum(times_lst)
     except:
         emotion_score = 0  # 一个周期内均没检测到人脸
@@ -166,7 +168,70 @@ def get_fatigue_score(fatigue):
         fatigue_score = 0
     return round(fatigue_score, 2)
 
+def get_focus_score(head_pose_score, emotion_score, fatigue_score):
+    focus_score = head_pose_score * 0.3 + emotion_score * 0.2 + fatigue_score * 0.4
 
+    if focus_score < 0.45:
+        focus_grade = 4
+    elif 0.45 <= focus_score < 0.6:
+        focus_grade = 3
+    elif 0.6 <= focus_score < 0.7:
+        focus_grade = 2
+    else:
+        focus_grade = 1
+
+    return round(focus_score, 2),focus_grade
+
+def concentrationFrameDetect(photo,emotion_times_dict,fatigue_lst,fatigue_grade_lst,pitch_lst,yaw_lst,roll_lst):
+    # 头部得分
+    head_pose_score, pitch_ave, yaw_ave, roll_ave = get_head_pose_score(pitch_lst, yaw_lst, roll_lst)
+    # 疲劳得分
+    '''一个周期都没有检测到人脸,疲劳度？'''
+    if fatigue_lst:
+        fatigue_score = get_fatigue_score(fatigue_lst[-1])  # 最后一次的fatigue代表一个周期的疲劳度
+        fatigue_grade = fatigue_grade_lst[-1]
+    else:
+        if pitch_ave < 15:  # 低头/抬头检测不到人脸的临界角
+            fatigue = 1  # 严重疲劳状态
+            fatigue_grade = 5
+        else:
+            fatigue = 0.5  # 人已经不在镜头视线范围,默认中度疲劳
+            fatigue_grade = 4
+        fatigue_score = 1 - fatigue  # 疲劳分数正向化
+
+    # 表情得分
+    emotion_score, emotion_sort = get_emotion_score(emotion_times_dict)
+    emotion_sort_dict = {'optimistic': 1, 'neutral': 2, 'negative': 3}
+    emotion_grade = emotion_sort_dict[emotion_sort]  # 情绪等级
+
+    # 专注度得分
+    focus_score, focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
+
+    # --------周期数据写入数据库study_state------------
+    # values中参数依次为student_id,state_key,state_value,record_time
+
+
+    print(f'pitch_ave:{pitch_ave},yaw_ave:{yaw_ave},roll_ave:{roll_ave}')
+    print(f'head_pose_score:{head_pose_score}')
+    print(f'emotion_score:{emotion_score}')
+    print(f'fatigue_score:{fatigue_score}')
+    print(f'focus_score:{focus_score}')
+    print(f'focus_grade:{focus_grade}')
+
+    cv2.putText(photo, f'head_pose_score:{head_pose_score}', (20, 200), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=(0, 0, 255), thickness=3)
+    cv2.putText(photo, f'emotion_score:{emotion_score}', (20, 240), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=(0, 0, 255), thickness=3)
+    cv2.putText(photo, f'fatigue_score:{fatigue_score}', (20, 280), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=(0, 0, 255), thickness=3)
+    cv2.putText(photo, f'focus_score:{focus_score}', (20, 320),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=(0, 0, 255), thickness=3)
+    cv2.putText(photo, f'focus_grade:{focus_grade}', (20, 360),
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=1, color=(0, 0, 255), thickness=3)
+
+    return photo
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)
@@ -177,6 +242,6 @@ if __name__ == '__main__':
             print(pitch, yaw, roll, is_pitch, is_yaw, is_roll)
         cv2.namedWindow('Frame', cv2.WINDOW_NORMAL)
         cv2.imshow('Frame', frame)
-        if cv2.waitKey(1) == 27:
+        if cv2.waitKey(1) == 27 or cv2.getWindowProperty("Frame",cv2.WND_PROP_AUTOSIZE) != 1:  # ESC的ASCII码，或按交叉退出
             cv2.destroyAllWindows()
             break

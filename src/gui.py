@@ -7,7 +7,7 @@ import numpy as np
 from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetect as posture_detect
 from fatigue_ui import fatigueFrameDetectDraw as fatigue_detect
-
+from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score, get_focus_score
 
 face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
 def faceDetectorVideo(img):
@@ -291,6 +291,8 @@ class MainCode(QMainWindow, Ui_MainWindow):
         elif self.buttonFlag==3:#按下疲劳分析按钮
             self.fatiguedatatuple,self.fatigueframe,photo=fatigue_detect(self.fatiguedatatuple,self.fatigueframe,frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
+        elif self.buttonFlag==2:#按下专注度分析按钮
+            focus_score, focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
         else:
             self.QImage = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
         self.img_label.setPixmap(QPixmap.fromImage(self.QImage))
