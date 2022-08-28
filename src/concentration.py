@@ -155,7 +155,6 @@ def get_head_pose_score(pitch_lst, yaw_lst, roll_lst):
         yaw_ave = 20
     else:
        pass
-
     return round(head_pose_score, 2), round(pitch_ave, 2), round(yaw_ave, 2), round(roll_ave, 2)  # 头部姿态评分权重
 
 

@@ -54,8 +54,7 @@ fatigue_lst = []  # 存储一个周期疲劳度
 pitch_lst = []  # 存放每帧数据的pitch绝对值
 yaw_lst = []  # 存放每帧数据的yaw绝对值
 roll_lst = [] # 存放每帧数据的yaw绝对值
-focus_grade = 5  # 初始专注度等级unknown
-focus_grade_dict = {1: 'extreme_more_focus', 2: 'more_focus', 3: 'less_focus', 4: 'extreme_less_focus',5:'unknown'}
+focus_grade_dict = {1: 'extreme_more_focus', 2: 'more_focus', 3: 'less_focus', 4: 'extreme_less_focus'}
 i = 0 # 运行周期计数
 t_1s=0 # 一秒定时
 
@@ -83,7 +82,7 @@ def faceDetectorVideo(img):
 
 
 def get_focus_score(head_pose_score, emotion_score, fatigue_score):
-    focus_score = head_pose_score * 0.3 + emotion_score * 0.2 + fatigue_score * 0.4
+    focus_score = head_pose_score * 0.3 + emotion_score * 0.3 + fatigue_score * 0.4
 
     if focus_score < 0.45:
         focus_grade = 4
@@ -96,7 +95,12 @@ def get_focus_score(head_pose_score, emotion_score, fatigue_score):
 
     return round(focus_score, 2),focus_grade
 
-
+''''
+is为前缀的参数取值0或1,1代表超过对应参数阈值,为原始数据记录的参数
+在运行时,为减少每帧的处理时间,默认不写入原始数据(写入原始数据:可将original_event_insert()函数对应的部分取消注释即可),只写入周期数据
+原始数据和周期数据记录：只记录参数变化后的值,未变化不记录
+周期运行结束，在images中会生成对应的周期处理图像及对应的专注度相关参数,若需要添加其他参数,在对应位置添加即可
+'''
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)  # 打开摄像头
     while True:
@@ -114,12 +118,14 @@ if __name__ == '__main__':
         emotion_times_dict[emotion_dic[emoFlag]] = emotion_times_dict[emotion_dic[emoFlag]] + 1
 
         # --------身体姿态模块-----------
+        # posture_grade分为1-4等级,is为前缀的疲劳组参数取值为0或1
         is_z_gap,is_y_gap_sh,is_y_head_gap,is_per,isPosture,posture_grade,photo=posture_detect(frame,photo)
         posture_grade_lst.append(posture_grade)
 
         # --------疲劳度模块------------
         rects = detector(gray, 0)  # 这个地方重复,但换成前面的rects会出错
         # 未检测到人脸,pitch/yaw/roll默认超过阈值;默认没有眨眼/打哈欠/闭眼
+        # is为前缀的参数取值为0或1
         is_pitch=1
         is_yaw=1
         is_roll=1
@@ -130,7 +136,7 @@ if __name__ == '__main__':
             # 计算ear,mar
             ear, mar = ear_mar(gray, rect)
 
-            # 第十三步：循环，满足条件的，眨眼次数+1
+            # 循环，满足条件的，眨眼次数+1
             ear, eye_conti_frames, step_frames, blink_times, eye_close_times, eye_close_frames,is_blink,is_close = \
                 eye_params(ear, eye_conti_frames,step_frames,blink_times,eye_close_times, eye_close_frames)
 
@@ -143,7 +149,7 @@ if __name__ == '__main__':
                                                                             yawn_times)
             # 打哈欠频率
             yawn_freq = yawn_times / period_frames
-            # 疲劳得分
+            # 疲劳得分,fatigue为疲劳组所计算的疲劳度,取值为正数
             fatigue = get_fatigue(blink_freq, yawn_freq, perclose, eye_close_times)
             fatigue_lst.append(fatigue)
 
@@ -157,6 +163,7 @@ if __name__ == '__main__':
                          yawn_freq, eye_close_times, perclose, rects, frame_counter, fatigue, fatigue_grade)
 
             # --------专注度模块-----------
+            # pitch,yaw,roll为角度,is为前缀的参数取值为0或1
             pitch, yaw, roll, is_pitch, is_yaw, is_roll, photo = get_euler_angle(photo)
             pitch_lst.append(abs(pitch))
             yaw_lst.append(abs(yaw))
@@ -174,15 +181,16 @@ if __name__ == '__main__':
             emotion_sort=emoFlag
 
             # 插入原始数据
-            original_event_insert(student_id, emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
-                                  is_y_head_gap, is_per, is_blink,is_yawn,is_close)
+            # original_event_insert(student_id, emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
+            #                       is_y_head_gap, is_per, is_blink,is_yawn,is_close)
 
         if frame_counter == period_frames:  # 一个计数周期结束
             i += 1
-            # 头部得分
+
+            # 头部得分,head_pose_score取值分为0.2、0.4、0.7和0.9,依次对应0~10,10~15,15~20和20以上的头部角度周期最大平均值
             head_pose_score,pitch_ave,yaw_ave,roll_ave = get_head_pose_score(pitch_lst, yaw_lst, roll_lst)
-            # 疲劳得分
-            '''一个周期都没有检测到人脸,疲劳度？'''
+
+            # 疲劳得分,fatigue_score在0~1之间,fatigue_grade分为1-5等级
             if fatigue_lst:
                 fatigue_score = get_fatigue_score(fatigue_lst[-1])  # 最后一次的fatigue代表一个周期的疲劳度
                 fatigue_grade=fatigue_grade_lst[-1]
@@ -195,12 +203,12 @@ if __name__ == '__main__':
                     fatigue_grade=4
                 fatigue_score=1-fatigue # 疲劳分数正向化
 
-            # 表情得分
+            # 表情得分,emotion_score取值为0~1之间,emotion_sort分为积极(optimistic)、中性(neutral)和消极(negative)
             emotion_score,emotion_sort = get_emotion_score(emotion_times_dict)
             emotion_sort_dict = {'optimistic': 1, 'neutral': 2, 'negative': 3}
-            emotion_grade=emotion_sort_dict[emotion_sort] # 情绪等级
+            emotion_grade=emotion_sort_dict[emotion_sort] # 情绪等级,emotion_grade分为1-3等级
 
-            # 专注度得分
+            # 专注度得分,focus_score在0~1之间,focus_grade分为1-4等级
             focus_score,focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
 
             # --------周期数据写入数据库study_state------------
@@ -231,11 +239,11 @@ if __name__ == '__main__':
             cv2.putText(photo, f'focus_grade:{focus_grade}', (20, 360),
                         fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale=1, color=(0, 0, 255), thickness=3)
-            cv2.imwrite('../images/out{}.png'.format(i), photo)
+            cv2.imwrite('../images/out{}.png'.format(i), photo) # 每周期写入一次数据,便于测试
 
             # 进入下一个周期,参数初始化
-            period_frames = 100  # 1000帧为一个周期
-            step_frames = 8  # 10帧为一个检测步长
+            period_frames = 100  # 100帧为一个周期
+            step_frames = 8  # 8帧为一个检测步长
             frame_counter = 0  # 帧计数器
             # 初始化疲劳评分
             fatigue = 0
@@ -267,7 +275,7 @@ if __name__ == '__main__':
             roll_lst = []
             focus_grade = 5  # 初始专注度等级unknown
 
-        # cv2.namedWindow('all', cv2.WINDOW_NORMAL)
+        cv2.namedWindow('all', cv2.WINDOW_NORMAL)
         cv2.imshow('all', photo)
         if cv2.waitKey(1) == 27 :  # ESC的ASCII码
             break
