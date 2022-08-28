@@ -185,6 +185,7 @@ def get_focus_score(head_pose_score, emotion_score, fatigue_score):
 
     return round(focus_score, 2),focus_grade
 
+#UI调用该函数，请不要删除————钟楚龙
 def concentrationFrameDetect(concentrationdatatuple,scoretuple,fatiguedatatuple,framecounter,framecountermax,frame):
     (head_pose_score, emotion_score,
      fatigue_score, focus_score, focus_grade)=scoretuple
