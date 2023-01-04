@@ -6,7 +6,7 @@ import numpy as np
 from scipy import stats
 from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetectCopy as posture_detect
-from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score
+from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score,get_focus_score
 from fatigue import ear_mar, eye_params, mouth_params, get_fatigue, get_fatigue_grade, add_text
 from database import initialize_database,doSql,original_event_counter,study_state_counter,original_event_insert,study_state_insert # 数据库操作类的库
 
@@ -23,6 +23,8 @@ predictor = dlib.shape_predictor('../lib/shape_predictor_68_face_landmarks.dat')
 # 定义常数
 # emotion_detect函数输出数字标签，需查字典得到情绪类别
 emotion_dic = {0: 'Angry', 1: 'Fear', 2: 'Happy', 3: 'Neutral', 4: 'Sad', 5: 'Surprise', 6: 'Hate'}
+
+#在一个多帧检测循环中，统计各种情绪的频次
 emotion_times_dict = {'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0, 'Sad': 0, 'Surprise': 0, 'Neutral': 0, }
 
 
@@ -83,19 +85,7 @@ def faceDetectorVideo(img):
     # 返回人脸矩形参数，压缩人脸灰度图
 
 
-def get_focus_score(head_pose_score, emotion_score, fatigue_score):
-    focus_score = head_pose_score * 0.3 + emotion_score * 0.3 + fatigue_score * 0.4
 
-    if focus_score < 0.45:
-        focus_grade = 4
-    elif 0.45 <= focus_score < 0.6:
-        focus_grade = 3
-    elif 0.6 <= focus_score < 0.7:
-        focus_grade = 2
-    else:
-        focus_grade = 1
-
-    return round(focus_score, 2),focus_grade
 
 ''''
 is为前缀的参数取值0或1,1代表超过对应参数阈值,为原始数据记录的参数
@@ -103,6 +93,7 @@ is为前缀的参数取值0或1,1代表超过对应参数阈值,为原始数据�
 原始数据和周期数据记录：只记录参数变化后的值,未变化不记录
 周期运行结束，在images中会生成对应的周期处理图像及对应的专注度相关参数,若需要添加其他参数,在对应位置添加即可
 '''
+
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)  # 打开摄像头
     while True:
@@ -111,13 +102,15 @@ if __name__ == '__main__':
 
         ret, frame = cap.read()
         rect, roi_gray, gray = faceDetectorVideo(frame)  # 输出人脸矩形坐标，压缩人脸灰度图
-        emoFlag, photo = emotion_detect(rect, roi_gray, frame, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片frame
+        emoFlag, photo = emotion_detect(rect, roi_gray, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片frame
         ''' emoFlag没有检测到人脸时候返回0'''
         # print(f'emoFlag:{emoFlag}')
 
         frame_counter += 1
         # --------表情模块模块-----------
-        emotion_times_dict[emotion_dic[emoFlag]] = emotion_times_dict[emotion_dic[emoFlag]] + 1
+        #emotion_dic[emoFlag]为识别的情绪名称，
+        # emotion_times_dict[emotion_dic[emoFlag]]为对应的名称的识别频次
+        emotion_times_dict[emotion_dic[emoFlag]] += 1
 
         # --------身体姿态模块-----------
         # posture_grade分为1-4等级,is为前缀的疲劳组参数取值为0或1
@@ -174,7 +167,8 @@ if __name__ == '__main__':
         delt_time = 1000 * (time.time() - frame_start) # 以毫秒为单位
         print(f'一帧处理需要:{delt_time}ms')
         t_1s += delt_time
-        if t_1s >= 1000:  # 1s计时结束,写入一次原始数据
+        # 1s计时结束,数据库写入一次原始数据
+        if t_1s >= 1000:
             # --------1s写一次原始数据---------
             # now 是待插入数据库的record_time字段
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -245,6 +239,8 @@ if __name__ == '__main__':
                         fontScale=1, color=(0, 0, 255), thickness=3)
             cv2.imwrite('../images/out{}.png'.format(i), photo) # 每周期写入一次数据,便于测试
 
+
+            ######################################################################################################
             # 进入下一个周期,参数初始化
             period_frames = 100  # 100帧为一个周期
             step_frames = 8  # 8帧为一个检测步长
@@ -279,9 +275,12 @@ if __name__ == '__main__':
             roll_lst = []
             focus_grade = 5  # 初始专注度等级unknown
 
-        cv2.namedWindow('all', cv2.WINDOW_NORMAL)
+
+        cv2.namedWindow('all_window', cv2.WINDOW_NORMAL)
+
+
         cv2.imshow('all', photo)
-        if cv2.waitKey(1) == 27 :  # ESC的ASCII码
+        if cv2.waitKey(1) == 27 or cv2.getWindowProperty("all_window",cv2.WND_PROP_AUTOSIZE) != 1:  # ESC的ASCII码，或按交叉退出
             break
     cap.release()
     cv2.destroyAllWindows()

@@ -183,7 +183,7 @@ def emotion_video(cap):
     cv.destroyAllWindows()
 
 
-def emotionFrameDetect(rect,face,image,photo):
+def emotionFrameDetect(rect,face,image):
     emoFlag=0
     if np.sum([face]) != 0.0:
         roi = face.astype("float") / 255.0#归一化
