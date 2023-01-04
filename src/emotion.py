@@ -13,7 +13,7 @@ def doSQL(sql):
 conn = pymysql.connect(host='127.0.0.1',
                        user='root',
                        password='123456',
-                       database='online_learning',
+                       # database='online_learning',
                        charset='UTF8MB4')
 cursor = conn.cursor()
 
