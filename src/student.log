@@ -1,0 +1,21 @@
+Wed, 01 Feb 2023 12:19:28 test.py[line:51] INFO: 数据库链接成功！
+Wed, 01 Feb 2023 12:19:28 test.py[line:52] INFO: <pymysql.connections.Connection object at 0x000001A8507CE190>
+Wed, 01 Feb 2023 12:19:49 test.py[line:51] INFO: 数据库链接成功！
+Wed, 01 Feb 2023 12:19:49 test.py[line:52] INFO: <pymysql.connections.Connection object at 0x00000205F0BBE190>
+Wed, 01 Feb 2023 12:20:26 test.py[line:47] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:39:37 test.py[line:46] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:39:47 test.py[line:46] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:39:58 test.py[line:46] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:41:23 test.py[line:46] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:41:45 test.py[line:46] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:43:00 test.py[line:45] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:44:42 test.py[line:51] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:45:08 test.py[line:51] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:59:34 test.py[line:51] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 12:59:46 test.py[line:51] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 13:00:23 test.py[line:50] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 21:28:15 test.py[line:50] ERROR: 数据库链接失败！
+Wed, 01 Feb 2023 21:46:09 test.py[line:51] INFO: 数据库链接成功！
+Wed, 01 Feb 2023 21:46:09 test.py[line:52] INFO: <pymysql.connections.Connection object at 0x00000235CEA2E190>
+Wed, 01 Feb 2023 22:31:38 test.py[line:51] INFO: 数据库连接成功！
+Wed, 01 Feb 2023 22:31:38 test.py[line:52] INFO: <pymysql.connections.Connection object at 0x0000017F5982E190>

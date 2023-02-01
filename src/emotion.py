@@ -5,6 +5,7 @@ from tensorflow.keras import Sequential
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 import pymysql
+from fer.fer import FER
 import datetime
 
 def doSQL(sql):
@@ -27,6 +28,8 @@ classes=list(emotion_dic.values())
 
 #所有函数公用对象，识别人脸分类器
 face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
+fer2013 = FER()
+
 
 #在框外用文字输出情绪
 def text_on_detected_boxes(text,text_x,text_y,image,font_scale = 1,
@@ -146,8 +149,6 @@ def emotion_database(event_value):#event_value为神经网络输出数字标签
             'VALUES("1","1","{}","{}")'.format(
                 state_dic[event_value], now))  # 数据表中插入新的识别结果
 
-
-
 def emotion_video(cap):
     while True:
         ret, frame = cap.read()
@@ -182,6 +183,48 @@ def emotion_video(cap):
     cap.release()
     cv.destroyAllWindows()
 
+def emotion_video_new(cap):
+    while True:
+        ret, frame = cap.read()
+        print(fer2013.detect_emotions(frame))
+        emotion, score = fer2013.top_emotion(frame)  # 'happy', 0.99
+        if emotion ==None:
+            emotion='No face'
+        cv.putText(frame, emotion,(100, 100), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        image=frame
+        #rect, face, image = faceDetectorVideo(frame)
+        '''
+        event_value=10#若保持不变，则没有检测到人脸
+        event_value_db=''
+        if np.sum([face]) != 0.0:
+            #t = time.time()#测试调用神经网络模型预测时间平均60ms
+            roi = face.astype("float") / 255.0
+            roi = img_to_array(roi)
+            roi = np.expand_dims(roi, axis=0)#把灰度图转化为narray数组，作为神经网络的输入
+
+            # 调用神经网络预测，用输出的数字标签查询字典，得到情绪的称呼
+
+            preds = classifier.predict(roi)[0]
+            event_value=preds.argmax()
+            label = emotion_dic[event_value]
+            label_position = (rect[0] + rect[1]//50, rect[2] + rect[3]//50)
+            text_on_detected_boxes(label, label_position[0], label_position[1], image) # 将情绪文字标注在方框外，对image进行修饰
+            fps = cap.get(cv.CAP_PROP_FPS)#获取视频帧率
+            cv.putText(image, str(fps),(5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+            #print(1.0 / (time.time() - t))#测试调用神经网络模型预测时间平均60ms
+        else:
+            cv.putText(image, "No Face Found", (5, 40), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+
+        emotion_database(event_value)#写本地数据库操作
+        '''
+        #cv.namedWindow('all', cv.WINDOW_NORMAL)
+        #cv.resizeWindow('all',1280//2,720//2)
+        cv.imshow('all', image)
+        if cv.waitKey(1) == 27 or cv.getWindowProperty("all",cv.WND_PROP_AUTOSIZE) != 1:#ESC的ASCII码
+            break
+
+    cap.release()
+    cv.destroyAllWindows()
 
 def emotionFrameDetect(rect,face,image):
     emoFlag=0
@@ -206,5 +249,7 @@ def emotionFrameDetect(rect,face,image):
     return emoFlag, image
 
 if __name__ =='__main__':
-    camera=cv.VideoCapture(0)#打开摄像头
-    emotion_video(camera)#识别人脸并识别情绪
+    #camera=cv.VideoCapture('../images/expressions_2.mp4',0)#分析视频demo表情
+    camera = cv.VideoCapture(0)
+    #emotion_video(camera)#识别人脸并识别情绪
+    emotion_video_new(camera)#code with paper fer2013 76.86% Ensemble ResMaskingNet with 6 other CNNs

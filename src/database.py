@@ -17,12 +17,12 @@ def connect():
     :return:
     '''
     try:
-     connect = pymysql.connect(
-        host='127.0.0.1', # localhost
-        user='root', # 用户user
-        password='123456', # 密码
-        database='online_learning',  # 数据库名称
-        charset='utf8',)  # 注意编码方式
+        connect = pymysql.connect(
+            host='127.0.0.1', # localhost
+            user='root', # 用户user
+            password='123456', # 密码
+            database='online_learning',  # 数据库名称
+            charset='utf8',)  # 注意编码方式
     except:
         print('数据库链接失败！')
     else:

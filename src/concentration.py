@@ -239,7 +239,7 @@ def concentrationFrameDetect(concentrationdatatuple,scoretuple,fatiguedatatuple,
 
     # --------分数评级显示-----------
     text_x=20
-    text_y=50
+    text_y=90
     textcolor=(255, 255, 0)
 
     cv2.putText(photo, f'head_pose_score:{head_pose_score}', (text_x, text_y), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
