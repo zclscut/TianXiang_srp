@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "在线学习状态分析系统家长端", "在线学习状态分析系统家长端\在线学习状态分析系统家长端.csproj", "{93A8C634-A2AA-41E3-9953-E57BCDF94C9A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93A8C634-A2AA-41E3-9953-E57BCDF94C9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93A8C634-A2AA-41E3-9953-E57BCDF94C9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93A8C634-A2AA-41E3-9953-E57BCDF94C9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93A8C634-A2AA-41E3-9953-E57BCDF94C9A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E35567F9-340E-4CAC-ABAB-98B10B537718}
+	EndGlobalSection
+EndGlobal

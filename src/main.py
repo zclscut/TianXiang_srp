@@ -8,7 +8,10 @@ from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetectCopy as posture_detect
 from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score,get_focus_score
 from fatigue import ear_mar, eye_params, mouth_params, get_fatigue, get_fatigue_grade, add_text
-from database import doSql,original_event_counter,study_state_counter,original_event_insert,study_state_insert # 数据库操作类的库
+from database import initialize_database,doSql,original_event_counter,study_state_counter,original_event_insert,study_state_insert # 数据库操作类的库
+
+# 进行数据库初始化操作(在没有初始化数据库情况)
+initialize_database()
 
 # 表情组人脸识别模型加载
 face_detector = cv2.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
@@ -19,7 +22,6 @@ predictor = dlib.shape_predictor('../lib/shape_predictor_68_face_landmarks.dat')
 
 # 定义常数
 # emotion_detect函数输出数字标签，需查字典得到情绪类别
-'''没有检测到人脸,专注度检测当做厌恶情绪,情绪等级划分？'''
 emotion_dic = {0: 'Angry', 1: 'Fear', 2: 'Happy', 3: 'Neutral', 4: 'Sad', 5: 'Surprise', 6: 'Hate'}
 
 #在一个多帧检测循环中，统计各种情绪的频次
@@ -171,12 +173,14 @@ if __name__ == '__main__':
             # now 是待插入数据库的record_time字段
             now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             t_1s=0
-            student_id=1
+            student_id=1 # 学生id暂默认为1
             emotion_sort=emoFlag
 
             # 插入原始数据
-            # original_event_insert(student_id, emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
-            #                       is_y_head_gap, is_per, is_blink,is_yawn,is_close)
+            original_event_insert(student_id, emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
+                                  is_y_head_gap, is_per, is_blink,is_yawn,is_close)
+
+
 
         if frame_counter == period_frames:  # 一个计数周期结束
             i += 1
@@ -214,12 +218,12 @@ if __name__ == '__main__':
             # 每个周期插入数据
             study_state_insert(student_id,emotion_grade,fatigue_grade,posture_grade,focus_grade)
 
-            print(f'pitch_ave:{pitch_ave},yaw_ave:{yaw_ave},roll_ave:{roll_ave}')
-            print(f'head_pose_score:{head_pose_score}')
-            print(f'emotion_score:{emotion_score}')
-            print(f'fatigue_score:{fatigue_score}')
-            print(f'focus_score:{focus_score}')
-            print(f'focus_grade:{focus_grade}')
+            # print(f'pitch_ave:{pitch_ave},yaw_ave:{yaw_ave},roll_ave:{roll_ave}')
+            # print(f'head_pose_score:{head_pose_score}')
+            # print(f'emotion_score:{emotion_score}')
+            # print(f'fatigue_score:{fatigue_score}')
+            # print(f'focus_score:{focus_score}')
+            # print(f'focus_grade:{focus_grade}')
 
             cv2.putText(photo, f'head_pose_score:{head_pose_score}', (20, 200), fontFace=cv2.FONT_HERSHEY_SIMPLEX,
                         fontScale=1, color=(0, 0, 255), thickness=3)

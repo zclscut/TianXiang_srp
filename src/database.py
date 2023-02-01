@@ -9,6 +9,37 @@ import pymysql
 import re
 import datetime
 
+#数据库初始化
+def initialize_database():
+    conn = pymysql.connect(host='127.0.0.1',
+                           user='root',
+                           password='123456',
+                           # database='online_learning', #在没有创建数据库时不需要指明数据库名参数
+                           charset='UTF8')
+    cursor = conn.cursor()
+
+    def doSQL(sql):
+        cursor.execute(sql)
+        conn.commit()
+
+    doSQL('show databases;')#查询数据库信息
+    data=cursor.fetchall()
+    listdata=list(data)
+    # print(listdata)# 数组
+    if ('online_learning',) not in listdata:
+        # 不存在online_learning库,进行数据库的初始化操作
+        with open('../lib/online_learning.sql', 'r+') as f:  # 对sql文件分行
+            sql_list = f.read().split(';')[:-1]  # sql文件最后一行加上;
+            sql_list = [x.replace('\n', ' ') if '\n' in x else x for x in sql_list]  # 将每段sql里的换行符改成空格
+            # print(sql_list)
+            for sql_item in sql_list:
+                sql_item = sql_item + ';'  # 添加分号
+                doSQL(sql_item)
+    # 关闭游标和连接
+    cursor.close()
+    conn.close()
+# initialize_database()
+
 # 获取与mysql数据库的连接
 # 创建连接对象
 def connect():
@@ -125,46 +156,6 @@ def study_state_insert(student_id,emotion_grade,fatigue_grade,posture_grade,focu
             '''
             doSql(emotion_sql, option='others')
 
-
-# 三表查询指令格式
-# 不同表若存在相同的列名,则需要加上表名避免混淆
-'''
-select 列名 from 表1,表2,表3
-where 表1.列名=表2.列名 and 表1或表2.列名=表3.列名
-'''
-
-# sql='''
-# USE online_learning;
-# SELECT student_info.student_id,student_name,record_time FROM student_info,study_state
-# WHERE student_info.student_id=1 and study_state.student_id=1;
-# '''
-# print(excute(sql,option='query'))
-
-# 删除
-# sql='''
-# use online_learning;
-# delete from study_state where state_key>=1;
-# '''
-# doSql(sql,option='others')
-
-# 插入数据
-now=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') # datetime类型
-# query_sql = f'''
-# use online_learning;
-# SELECT * FROM study_state ORDER BY counter DESC LIMIT 1;
-# '''
-# query_result = doSql(query_sql, option='query')
-# if query_result:
-#     counter = query_result[0][0][0]
-#     value=query_result[0][0][3]
-# else:
-#     counter = 0
-#     value=[]
-# insert_sql = f'''
-# use online_learning;
-# INSERT INTO study_state values ({counter + 1}, '1', '1', '1', '{now}');
-# '''
-# doSql(insert_sql, option='query')
 
 
 
