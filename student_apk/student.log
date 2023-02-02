@@ -1,0 +1,6 @@
+Wed, 01 Feb 2023 22:33:38 database.py[line:68] INFO: 数据库连接成功！
+Wed, 01 Feb 2023 22:33:38 database.py[line:69] INFO: <pymysql.connections.Connection object at 0x00000188667013A0>
+Wed, 01 Feb 2023 22:34:38 database.py[line:68] INFO: 数据库连接成功！
+Wed, 01 Feb 2023 22:34:38 database.py[line:69] INFO: <pymysql.connections.Connection object at 0x00000260BFAD33A0>
+Wed, 01 Feb 2023 22:38:46 database.py[line:68] INFO: failed to connect to 101.33.198.88:3306
+Wed, 01 Feb 2023 22:38:46 database.py[line:69] INFO: <pymysql.connections.Connection object at 0x0000027D102703D0>

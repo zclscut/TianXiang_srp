@@ -27,7 +27,7 @@ fmt = "%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s: %(message)s"
 logging.basicConfig(
     level=logging.DEBUG,
     format=fmt,
-    filename="student.log",
+    filename="parent.log",
     filemode="a",
     datefmt="%a, %d %b %Y %H:%M:%S"
     )
