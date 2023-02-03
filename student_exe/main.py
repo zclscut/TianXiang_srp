@@ -8,7 +8,7 @@ from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetectCopy as posture_detect
 from concentration import get_euler_angle, get_emotion_score, get_head_pose_score, get_fatigue_score,get_focus_score
 from fatigue import ear_mar, eye_params, mouth_params, get_fatigue, get_fatigue_grade, add_text
-from database import doSql,original_event_counter,study_state_counter,original_event_insert,study_state_insert # 数据库操作类的库
+from database import doSql,original_event_counter,study_state_counter,original_event_insert_all,study_state_insert_all # 数据库操作类的库
 
 # 表情组人脸识别模型加载
 face_detector = cv2.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
@@ -212,7 +212,7 @@ if __name__ == '__main__':
             student_id=1  # 暂默认为1
 
             # 每个周期插入数据
-            study_state_insert(student_id,emotion_grade,fatigue_grade,posture_grade,focus_grade)
+            study_state_insert_all(student_id,emotion_grade,fatigue_grade,posture_grade,focus_grade)
 
             print(f'pitch_ave:{pitch_ave},yaw_ave:{yaw_ave},roll_ave:{roll_ave}')
             print(f'head_pose_score:{head_pose_score}')

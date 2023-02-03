@@ -1,6 +1,321 @@
-Wed, 01 Feb 2023 22:33:38 database.py[line:68] INFO: 数据库连接成功！
-Wed, 01 Feb 2023 22:33:38 database.py[line:69] INFO: <pymysql.connections.Connection object at 0x00000188667013A0>
-Wed, 01 Feb 2023 22:34:38 database.py[line:68] INFO: 数据库连接成功！
-Wed, 01 Feb 2023 22:34:38 database.py[line:69] INFO: <pymysql.connections.Connection object at 0x00000260BFAD33A0>
-Wed, 01 Feb 2023 22:38:46 database.py[line:68] INFO: failed to connect to 101.33.198.88:3306
-Wed, 01 Feb 2023 22:38:46 database.py[line:69] INFO: <pymysql.connections.Connection object at 0x0000027D102703D0>
+Fri, 03 Feb 2023 20:34:46 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:34:46 database.py[line:111] INFO: After querying,the length of data table equals 2
+Fri, 03 Feb 2023 20:35:30 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:35:50 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 20:35:50 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:51 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:51 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:52 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:52 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:53 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:53 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:54 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:54 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:55 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:35:55 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:43 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:43 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:43 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:44 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:44 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:45 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:45 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:46 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:46 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:47 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:47 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:48 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:48 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:49 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:49 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:50 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:50 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:50 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:51 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:51 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:51 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:52 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:52 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:52 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:52 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:53 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:53 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:54 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:54 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:54 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:54 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:55 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:55 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:55 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:55 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:56 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:56 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:56 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:57 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:57 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:57 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:58 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:58 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:36:58 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:59 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:36:59 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:01 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:40:08 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 20:40:09 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:10 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:10 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:11 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:11 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:12 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:12 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:13 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:13 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:13 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:14 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:14 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:14 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:15 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:15 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:15 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:16 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:16 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:17 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:17 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:17 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:17 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:18 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:18 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:18 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:18 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:19 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:19 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:20 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:20 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:40:20 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:21 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:21 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:22 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:22 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:40:23 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:00 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:43:06 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 20:43:07 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:07 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:08 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:08 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:08 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:09 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:09 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:10 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:10 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:10 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:11 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:11 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:11 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:11 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:12 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:12 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:12 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:12 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:13 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:13 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:14 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:14 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:14 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:14 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:43:15 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:15 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:16 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:16 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:17 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:43:17 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:29 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:46:36 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 20:46:37 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:37 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:38 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:38 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:39 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:39 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:40 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:40 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:41 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:41 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:41 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:41 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:42 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:42 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:42 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:42 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:43 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:43 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:44 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:44 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:44 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:44 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:45 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:45 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:45 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:46 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:46 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:46 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:46:47 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:46:47 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 20:48:44 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:48:50 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 20:48:51 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:48:51 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:48:52 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:50:14 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:50:35 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 20:50:35 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:50:36 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:50:36 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:50:37 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:51:53 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:51:53 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:55:55 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:55:56 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 20:59:16 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 20:59:16 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 21:00:10 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:00:10 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 21:00:30 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:00:30 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 21:01:11 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:01:12 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 21:01:27 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:01:27 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 21:02:16 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:02:16 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 21:03:09 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:03:09 database.py[line:111] INFO: After querying,the length of data table equals 3
+Fri, 03 Feb 2023 21:03:37 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:03:38 database.py[line:111] INFO: After querying,the length of data table equals 4
+Fri, 03 Feb 2023 21:04:08 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:04:09 database.py[line:111] INFO: After querying,the length of data table equals 4
+Fri, 03 Feb 2023 21:04:20 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:04:20 database.py[line:111] INFO: After querying,the length of data table equals 4
+Fri, 03 Feb 2023 21:04:35 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:04:35 database.py[line:111] INFO: After querying,the length of data table equals 5
+Fri, 03 Feb 2023 21:04:39 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:04:39 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:04:55 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:04:55 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:04:57 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:04:57 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:05:33 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:05:34 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:05:48 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:05:56 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 21:05:57 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:05:57 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:05:57 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:05:57 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:05:58 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:05:58 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:05:59 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:05:59 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:05:59 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:05:59 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:00 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:00 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:00 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:00 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:01 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:01 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:02 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:02 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:02 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:02 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:03 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:03 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:04 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:04 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:04 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:04 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:05 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:05 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:06:05 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:06:06 database.py[line:92] ERROR: Operating database error!
+Fri, 03 Feb 2023 21:07:04 database.py[line:33] INFO: 在tensorflow下测试
+Fri, 03 Feb 2023 21:07:12 warnings.py[line:109] WARNING: D:/pythoncode/tianxiang_srp/student_exe/gui.py:27: DeprecationWarning: elementwise comparison failed; this will raise an error in the future.
+  if faces == ():
+
+Fri, 03 Feb 2023 21:07:13 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:07:13 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:07:14 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:07:14 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:07:15 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:07:15 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:07:16 database.py[line:111] INFO: After querying,the length of data table equals 6
+Fri, 03 Feb 2023 21:07:16 database.py[line:111] INFO: After querying,the length of data table equals 7
+Fri, 03 Feb 2023 21:07:17 database.py[line:111] INFO: After querying,the length of data table equals 7
+Fri, 03 Feb 2023 21:07:17 database.py[line:111] INFO: After querying,the length of data table equals 7
+Fri, 03 Feb 2023 21:07:18 database.py[line:111] INFO: After querying,the length of data table equals 7
+Fri, 03 Feb 2023 21:07:18 database.py[line:111] INFO: After querying,the length of data table equals 7
+Fri, 03 Feb 2023 21:07:19 database.py[line:111] INFO: After querying,the length of data table equals 7
+Fri, 03 Feb 2023 21:07:19 database.py[line:111] INFO: After querying,the length of data table equals 8
+Fri, 03 Feb 2023 21:07:20 database.py[line:111] INFO: After querying,the length of data table equals 9
+Fri, 03 Feb 2023 21:07:21 database.py[line:111] INFO: After querying,the length of data table equals 10
+Fri, 03 Feb 2023 21:07:21 database.py[line:111] INFO: After querying,the length of data table equals 10
+Fri, 03 Feb 2023 21:07:21 database.py[line:111] INFO: After querying,the length of data table equals 10
+Fri, 03 Feb 2023 21:07:22 database.py[line:111] INFO: After querying,the length of data table equals 11
+Fri, 03 Feb 2023 21:07:23 database.py[line:111] INFO: After querying,the length of data table equals 11
+Fri, 03 Feb 2023 21:07:23 database.py[line:111] INFO: After querying,the length of data table equals 11
+Fri, 03 Feb 2023 21:07:24 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:07:24 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:07:25 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:07:25 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:42 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:42 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:43 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:43 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:44 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:44 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:45 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:45 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:46 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:46 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:47 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:47 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:48 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:48 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:48 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:49 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:49 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:50 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:50 database.py[line:111] INFO: After querying,the length of data table equals 12
+Fri, 03 Feb 2023 21:08:51 database.py[line:111] INFO: After querying,the length of data table equals 13
+Fri, 03 Feb 2023 21:08:51 database.py[line:111] INFO: After querying,the length of data table equals 13
+Fri, 03 Feb 2023 21:08:52 database.py[line:111] INFO: After querying,the length of data table equals 13
+Fri, 03 Feb 2023 21:08:52 database.py[line:111] INFO: After querying,the length of data table equals 13
+Fri, 03 Feb 2023 21:08:53 database.py[line:111] INFO: After querying,the length of data table equals 13
+Fri, 03 Feb 2023 21:08:53 database.py[line:111] INFO: After querying,the length of data table equals 13
+Fri, 03 Feb 2023 21:08:54 database.py[line:111] INFO: After querying,the length of data table equals 14
+Fri, 03 Feb 2023 21:08:54 database.py[line:111] INFO: After querying,the length of data table equals 14
+Fri, 03 Feb 2023 21:08:55 database.py[line:111] INFO: After querying,the length of data table equals 14
+Fri, 03 Feb 2023 21:08:55 database.py[line:111] INFO: After querying,the length of data table equals 14
+Fri, 03 Feb 2023 21:08:56 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:08:56 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:08:57 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:08:57 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:08:58 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:08:58 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:08:59 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:08:59 database.py[line:111] INFO: After querying,the length of data table equals 15
+Fri, 03 Feb 2023 21:09:00 database.py[line:111] INFO: After querying,the length of data table equals 15

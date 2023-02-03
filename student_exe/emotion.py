@@ -1,6 +1,8 @@
 import numpy as np
 import cv2 as cv
 import time
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '4'
 from tensorflow.keras import Sequential
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array

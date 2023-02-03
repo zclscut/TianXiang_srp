@@ -4,10 +4,15 @@ from PySide2.QtGui import *
 from PySide2.QtWidgets import *
 import cv2 as cv
 import numpy as np
+import datetime
+import logging
 from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetect as posture_detect
 from fatigue_ui import fatigueFrameDetectDraw as fatigue_detect
 from concentration import concentrationFrameDetect as concentration_detect
+from database import original_event_counter,doSql,event_insert
+
+
 
 face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
 def faceDetectorVideo(img):
@@ -273,6 +278,8 @@ class MainCode(QMainWindow, Ui_MainWindow):
         if self.buttonFlag==0:
             self.buttonFlag=4
             #self.pushButton_4.setText('open4')
+
+
         else:
             self.buttonFlag=0
             #self.pushButton_4.setText('close')
@@ -292,14 +299,53 @@ class MainCode(QMainWindow, Ui_MainWindow):
             rect, roi_gray, gray = faceDetectorVideo(frame)  # 输出人脸矩形坐标，压缩人脸灰度图
             emoFlag, photo = emotion_detect(rect, roi_gray, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片
             self.QImage=QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # counter = original_event_counter()  # 查询original_event表中现有数据行数
+            # emotion_sql = f'''
+            #             use online_learning;
+            #             insert into original_event values({counter + 1},1538484710,2,{emoFlag},'{now}');
+            #             '''
+            # doSql(emotion_sql, option='others')
+            event_insert('13423', 1, emoFlag, 0)
+
+            #log.info("The user zcl write to the database sucessfully")
+            #logging.info("the original_event=emotion,original_value={}".format(emoFlag))
+
+
+
+
         # 按下姿势识别按钮
         elif self.buttonFlag==4:
             headPosture,photo=posture_detect(frame,frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
+
+            event_insert('13423', 1, headPosture, 0)
+            # log.info("The user zcl write to the database successfully")
+            #logging.info("the original_event=posture,original_value={}".format(3))
+
         # 按下疲劳分析按钮
         elif self.buttonFlag==3:
             self.fatiguedatatuple,photo=fatigue_detect(self.fatiguedatatuple,self.framecounter,frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            # 查询最近一次的疲劳检测写数据库的值
+            sql = f'''select * from online_learning.original_event where event_key=4 order by record_time desc limit 1;'''
+            data = doSql(sql, option='query')
+            if data:
+                value = data[0][0][3]
+            else:
+                value = []
+            if value == [] or (value != '4'):#疲劳检测event_key=4
+                counter = original_event_counter()  # 查询original_event表中现有数据行数
+                emotion_sql = f'''
+                            use online_learning;
+                            insert into original_event values({counter + 1},1538484710,2,{headPosture},'{now}');
+                            '''
+                doSql(emotion_sql, option='others')
+                # log.info("The user zcl write to the database successfully")
+                # logging.info("the original_event=fatigue,original_value={}".format(3))
         # 按下专注度分析按钮
         elif self.buttonFlag==2:
             self.scoretuple,self.fatiguedatatuple,photo=\
@@ -307,6 +353,16 @@ class MainCode(QMainWindow, Ui_MainWindow):
                                      self.fatiguedatatuple,self.framecounter,
                                      self.framecountermax,frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            counter = original_event_counter()  # 查询original_event表中现有数据行数
+            emotion_sql = f'''
+                        use online_learning;
+                        insert into original_event values({counter + 1},1538484710,2,{headPosture},'{now}');
+                        '''
+            doSql(emotion_sql, option='others')
+            # log.info("The user zcl write to the database successfully")
+            # logging.info("the original_event=concentration,original_value={}".format(3))
         else:
             self.QImage = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
         self.img_label.setPixmap(QPixmap.fromImage(self.QImage))
