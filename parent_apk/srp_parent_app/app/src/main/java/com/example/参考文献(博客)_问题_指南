@@ -1,0 +1,49 @@
+1.底部导航栏:https://blog.csdn.net/m0_46267375/article/details/109393163
+2.在fragment中实现按钮的监听:https://blog.csdn.net/weixin_51080921/article/details/124129031
+3.底部导航栏+顶部切换页:https://blog.csdn.net/weixin_44139159/article/details/111590002
+4.解决xml中com.github.mikephil.charting.charts.BarChart无法导入:https://blog.csdn.net/qq_28872655/article/details/123690968
+5.存在相似功能的类Duplicate class问题解决:https://blog.csdn.net/happiness365/article/details/123321499
+6.实现fragment跳转倒fragment中:在MainActivity中定义Fragment,再构造跳转函数，然后实现跳转:https://blog.csdn.net/JLM_8/article/details/71272638
+7.图表模板：https://blog.csdn.net/chuyouyinghe/article/details/123092323
+8.时间字符串转换为long：https://www.cnblogs.com/QEStack/p/8250831.html
+9.弹窗实现信息填写：https://www.bbsmax.com/A/q4zVmWxxdK/
+10.R.string.app_version查询strings.xml中字符串：https://blog.csdn.net/qq_30885821/article/details/114384448
+11.空指针错误：没有实例化控件
+12.数据库操作无法找到支持的包：jar版本太高，换成5系列版本;或者gradle中存在多个版本的implementation
+13.apk打包问题：https://blog.csdn.net/SmileToLin/article/details/106434824
+14.查询数据库没有结果：1）jar版本不能太高；2）编码设置encoding;3）学会使用log.i查看结果；
+                   4）会坚持看报错的部分，根据报错找问题;5)本机ip发生变化
+                   6)查询数据必须新开一个线程进行查询
+15.颜色hex对照表：https://blog.csdn.net/sdgihshdv/article/details/53838320
+16.单选弹窗：https://www.jb51.net/article/149742.htm
+17.退出所有页面：https://www.cnblogs.com/caobotao/p/5127645.html
+18.SharedPreferences记住密码实现：https://blog.csdn.net/lu202032/article/details/117091240
+19.SharedPreferences实现activity之间通信(不同信息使用不同key标识，信息可以覆盖)：https://blog.csdn.net/beijinghsj/article/details/53863983
+20.线程连接数据库:https://blog.csdn.net/qq_37141773/article/details/84316179
+21.数据库的所有操作都必须在进程中完成
+22.进程中不能进行变量修改，需要将进程单独设置为一个方法，对该方法进行try-catch判断，从而实现变量设置(见注册页)
+23.空白字符串用null表示
+24.信息设置页面的设计的和图标参考：https://github.com/KuoLuoC/JZ_app/tree/master
+
+
+---------------------------存在的问题---------------------------------
+1.查询数据库采用静态方法实现，每次查询到的数据都是前一次的查询的结果；
+2.图表显示需要点击查询几次，会出现前几次点击的结果都是空白无数据
+3.注册完成后不能马上进入信息设置的dialog中
+4.折线图横轴没有显示时间，点与点之间的时间差没有展示出来
+5.只实现了邮箱验证码的注册，没有实现手机验证码注册
+6.信息完善的的判断处理逻辑不完善：可能存在用户非法输入情况，比如性别没有使用单选按钮组来实现，可能被用户输入为“1”等
+7.主页面不够简洁，4个fragment都是一样的结果，有些冗杂(可以只用一个主页面)
+8.目前没有日志记录功能
+9.没有添加对学生查询结果分析，然后将分析结果(包括学习状态预警)通过邮箱发送给家长
+10.没有日志写入和记录
+11.没有使用文件读取数据库配置文件
+
+-------------------------使用指南------------------------------------
+1.学生端和家长端的登录账号一样(parent_tel电话或parent_email邮箱),密码均由家长设置，可以不一样
+2.如果碰到点击一次没有反应，那就多点击几次(一般点击两次即可)
+3.目前只有id为1(student_id和parent_id)的才有查询结果，其他账号因为id非1(数据库中只有id为1的数据),所以没有结果展示
+4.demo演示：账号fancilia20@gmail.com 密码1234567
+5.不要点击太快(数据查询需要时间)
+6.进入主页面后,先设置开始和结束时间(点击确认即可,“确认”默认的时间段为数据库中可查询时间范围),
+   再点击查询,查询多点几次(点击慢一点)，直到有结果显示为止

@@ -1,0 +1,247 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/component_head_bar_main" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp">
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:text="from:"
+                            />
+                        <TextView
+                            android:id="@+id/from_datetime_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/black"
+                            android:text="2023-01-01 19:30"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="40dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/black"
+                            android:text="to:"
+                            />
+                        <TextView
+                            android:id="@+id/to_datetime_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textColor="@color/black"
+                            android:text="2023-01-01 20:30"
+                            />
+                    </LinearLayout>
+
+                </RelativeLayout>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:paddingBottom="10dp">
+
+
+                    <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/line_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="270dp">
+                    </com.github.mikephil.charting.charts.LineChart>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="-25dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="15dp"
+                    >
+                    <Button
+                        android:id="@+id/start_time_button"
+                        android:background="@color/purple_500"
+                        android:textSize="13sp"
+                        android:text="开始时间"
+                        android:layout_gravity="fill_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:layout_marginTop="7dp"
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="35dp"/>
+
+                    <Button
+                        android:id="@+id/end_time_button"
+                        android:background="@color/purple_500"
+                        android:textSize="13sp"
+                        android:text="结束时间"
+                        android:layout_gravity="fill_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="35dp"/>
+
+                    <Button
+                        android:id="@+id/emotion_query_button"
+                        android:background="@color/purple_500"
+                        android:textSize="13sp"
+                        android:text=" 查 询 "
+                        android:layout_gravity="center_horizontal"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="4dp"
+                        android:paddingLeft="7dp"
+                        android:paddingRight="7dp"
+                        android:layout_marginTop="7dp"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/white"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="35dp"/>
+
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:paddingBottom="10dp">
+
+                        <!--折线图-->
+                    <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/pie_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="503dp">
+
+                    </com.github.mikephil.charting.charts.PieChart>
+
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/layout_typedata"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+
+
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                    </androidx.recyclerview.widget.RecyclerView>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+</LinearLayout>
+<!--    &lt;!&ndash;    复用head_bar&ndash;&gt;-->
+<!--<include layout="@layout/component_head_bar_main"/>-->
+<!--    &lt;!&ndash;    饼图&ndash;&gt;-->
+
+
+<!--<LinearLayout-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="40dp"-->
+<!--android:orientation="horizontal"-->
+<!--    >-->
+<!--<Button-->
+<!--    android:id="@+id/emotion_start_time_button"-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_weight="2"-->
+<!--    android:text="开始时间"-->
+<!--    android:textSize="13sp"-->
+<!--    android:layout_gravity="center" />-->
+
+<!--<Button-->
+<!--    android:id="@+id/emotion_end_time_button"-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_weight="2"-->
+<!--    android:text="结束时间"-->
+<!--    android:textSize="13sp"-->
+<!--    android:layout_gravity="center" />-->
+
+<!--<Button-->
+<!--    android:id="@+id/emotion_query_button"-->
+<!--    android:layout_width="0dp"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:layout_weight="1"-->
+<!--    android:text="查询"-->
+<!--    android:textSize="13sp"-->
+<!--    android:layout_gravity="center" />-->
+
+<!--</LinearLayout>-->
+<!--    &lt;!&ndash;折线图&ndash;&gt;-->
+<!--<com.github.mikephil.charting.charts.BarChart-->
+<!--android:id="@+id/emotion_bar_chart"-->
+<!--android:layout_width="match_parent"-->
+<!--android:layout_height="503dp">-->
+
+<!--</com.github.mikephil.charting.charts.BarChart>-->

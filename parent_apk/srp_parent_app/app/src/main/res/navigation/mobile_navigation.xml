@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.example.fragment.FragmentEmotion"
+        tools:layout="@layout/fragment_emotion" />
+
+    <fragment
+        android:id="@+id/navigation_view"
+        android:name="com.example.fragment.FragmentFatigue"
+        tools:layout="@layout/fragment_fatigue" />
+
+    <fragment
+        android:id="@+id/navigation_edit"
+        android:name="com.example.fragment.FragmentPosture"
+        tools:layout="@layout/fragment_posture" />
+
+    <fragment
+        android:id="@+id/navigation_user"
+        android:name="com.example.fragment.FragmentFocus"
+        tools:layout="@layout/fragment_focus" />
+</navigation>
