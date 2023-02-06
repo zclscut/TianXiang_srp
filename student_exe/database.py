@@ -30,7 +30,11 @@ fh = logging.FileHandler('student.log')
 fh.setLevel(logging.DEBUG)
 fh.setFormatter(formatter)
 log.addHandler(fh)
-log.info('在tensorflow下测试')
+# 使用log对象而不直接用logging方法，
+# 是为了防止和调用文件原有日志输出冲突，
+# 例如tensorflow本来就有控制台日志，
+# 调用时导致database日志功能消失
+
 # logging.debug("this is debug logger")
 # logging.info("this is info logger")
 # logging.warning("this is warn logger")
@@ -108,7 +112,7 @@ def original_event_counter(): # original_event的counter查询
         counter =result[0][0][0]
     else:
         counter = 0
-    log.info('After querying,the length of data table equals {}'.format(counter))
+    log.info('After querying,the length of original_event table equals {}'.format(counter))
     return counter
 
 def study_state_counter(): # study_state的counter查询
@@ -121,39 +125,58 @@ def study_state_counter(): # study_state的counter查询
         counter =result[0][0][0]
     else:
         counter = 0
+    log.info('After querying,the length of study_state table equals {}'.format(counter))
     return counter
 
 
 # original_event插入单项数据
 # eg:event_insert('345', 'emotion', 'hate')
+# eg:event_insert('345', 'emotion', 2, 2)
+# eg:event_insert('345', 1, 'hate',1)
 # eg:event_insert('345', 1, 2, 0)
-# 如果string=1,则插入输入参数为字符串；如果string=0,则插入输入参数为数字
-def event_insert(student_id,event_type,event_value_type,string=1):
+# 如果string=0b11,则两个输入参数为字符串；如果string=0b00,则两个输入参数为数字
+# 如果string=0b10,则第一个输入参数为字符串；如果string=0b01,则第两个输入参数为字符串
+def event_insert(student_id,event_type,event_value_type,str_type=3):
     event_key,event_value=0,0
-    if string==1:
+    if str_type==3:
         sql = f'''select event_key from online_learning.original_event_key where event_type='{event_type}';'''
         event_key = doSql(sql, option='query')#返回三维数组，eg:[(('1',),)]
-        print(event_key)
+        #print(event_key)
         event_key=event_key[0][0][0]
-        print(event_key)
+        #print(event_key)
         sql = f'''select event_value from online_learning.original_event_value where event_key={event_key} and event_value_type='{event_value_type}';'''
         event_value = doSql(sql, option='query')#返回三维数组，eg:[(('1',),)]
-        print(event_value)
+        #print(event_value)
         event_value=event_value[0][0][0]
-        print(event_value)
-    elif string==0:
+        #print(event_value)
+    elif str_type==2:
+        sql = f'''select event_key from online_learning.original_event_key where event_type='{event_type}';'''
+        event_key = doSql(sql, option='query')  # 返回三维数组，eg:[(('1',),)]
+        event_key = event_key[0][0][0]
+
+        event_value = event_value_type
+    elif str_type==1:
+        event_key = event_type
+
+        sql = f'''select event_value from online_learning.original_event_value where event_key={event_key} and event_value_type='{event_value_type}';'''
+        event_value = doSql(sql, option='query')  # 返回三维数组，eg:[(('1',),)]
+        event_value = event_value[0][0][0]
+    elif str_type==0:
         event_key=event_type
         event_value=event_value_type
+    else:
+        log.error('insert error:str_type inputs out of range(0~3)')
+
 
     # 查询最近一次的value值,防止插入的value值相等
-    print('event_key={}'.format(event_key))
+    #print('event_key={}'.format(event_key))
     sql = f'''select * from online_learning.original_event where event_key={event_key} order by record_time desc limit 1;'''
-    print(sql)
+    #print(sql)
     data = doSql(sql, option='query')
-    print(data)
+    #print(data)
     if data:
         value = data[0][0][3]
-        print('value={}'.format(value))
+        #print('value={}'.format(value))
     else:
         value = []
     counter = original_event_counter()  # 查询original_event表中现有数据行数
@@ -184,11 +207,72 @@ def original_event_insert_all(student_id,emotion_sort,is_pitch, is_yaw, is_roll,
             value = []
         counter = original_event_counter()  # 查询original_event表中现有数据行数
         if value == [] or (value != str(event_value)):
-            emotion_sql = f'''
+            sql = f'''
             use online_learning;
             insert into original_event values({counter + 1},{student_id},{event_key},{event_value},'{now}');
             '''
-            doSql(emotion_sql, option='others')
+            doSql(sql, option='others')
+
+
+# state_event插入单项数据
+# eg:state_insert('345', 'fatigue', 'mild_fatigue')
+# eg:state_insert('345', 'fatigue', 3, 2)
+# eg:state_insert('345', 2, 'mild_fatigue', 1)
+# eg:state_insert('345', 2, 3, 0)
+# 如果string=0b11,则两个输入参数为字符串；如果string=0b00,则两个输入参数为数字
+# 如果string=0b10,则第一个输入参数为字符串；如果string=0b01,则第两个输入参数为字符串
+def state_insert(student_id,state_type,state_value_type,str_type=3):
+    event_key,event_value=0,0
+    if str_type==3:
+        #查询学习状态键表
+        sql = f'''select state_key from online_learning.study_state_key where state_type='{state_type}';'''
+        state_key = doSql(sql, option='query')#返回三维数组，eg:[(('1',),)]
+        #print(state_key)
+        state_key=state_key[0][0][0]
+        #print(state_key)
+        #查询学习状态值表
+        sql = f'''select state_value from online_learning.study_state_value where state_key={state_key} and state_value_type='{state_value_type}';'''
+        state_value = doSql(sql, option='query')#返回三维数组，eg:[(('1',),)]
+        #print(state_value)
+        state_value=state_value[0][0][0]
+        #print(state_value)
+    elif str_type==2:
+        sql = f'''select state_key from online_learning.study_state_key where state_type='{state_type}';'''
+        state_key = doSql(sql, option='query')  # 返回三维数组，eg:[(('1',),)]
+        state_key = state_key[0][0][0]
+
+        state_value = state_value_type
+    elif str_type==1:
+        state_key = state_type
+
+        sql = f'''select state_value from online_learning.study_state_value where state_key={state_key} and state_value_type='{state_value_type}';'''
+        state_value = doSql(sql, option='query')  # 返回三维数组，eg:[(('1',),)]
+        state_value = state_value[0][0][0]
+    elif str_type==0:
+        state_key=state_type
+        state_value=state_value_type
+    else:
+        log.error('insert error:str_type inputs out of range(0~3)')
+
+    # 查询最近一次的value值,防止插入的value值相等
+    #print('state_key={}'.format(state_key))
+    sql = f'''select * from online_learning.study_state where state_key={state_key} order by record_time desc limit 1;'''
+    #print(sql)
+    data = doSql(sql, option='query')
+    #print(data)
+    if data:
+        value = data[0][0][3]
+        #print('value={}'.format(value))
+    else:
+        value = []
+    counter = study_state_counter()  # 查询original_event表中现有数据行数
+    if value == [] or (value != str(state_value)):
+        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        sql = f'''
+                use online_learning;
+                insert into study_state values({counter + 1},{student_id},{state_key},{state_value},'{now}');
+                '''
+        doSql(sql, option='others')
 
 
 # study_state插入数据
@@ -258,7 +342,12 @@ where 表1.列名=表2.列名 and 表1或表2.列名=表3.列名
 
 if __name__ == '__main__':
     # connect()
-    event_insert('345', 2, 3, 0)
+    print('event插入')
+    event_insert('zcl', 2, 1, 0)
     #event_insert('345', 'emotion', 'hate')
+
+    print('\nstate插入')
+    state_insert('zcl', 'fatigue', 'mild_fatigue')
+    state_insert('zcl', 2, 4, 0)
 
 

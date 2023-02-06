@@ -64,7 +64,12 @@ predictor = dlib.shape_predictor(
 
 def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头原图，photo是绘制过的图片，在别的模块绘制的基础上再次绘制输出
 
-
+    # FATIGUEGRADE疲劳等级1~5，FATIGUE疲劳分数0~1
+    # TOTAL总眨眼次数，eFre为眨眼频率
+    # COUNTER为闭眼计时器，闭眼时长过长判定为闭眼，
+    # eTOTAL总闭眼次数，PERCLOSE闭眼时长占比，eTime闭眼时长
+    # mCOUNTER张嘴计数器，张嘴时长过长判定为打哈欠，
+    # mTOTAL打哈欠次数，mFre为打哈欠频率
     (FATIGUEGRADE,FATIGUE,COUNTER,TOTAL,eTOTAL,PERCLOSE,mCOUNTER,mTOTAL,eTime,eFre,mFre)= datatuple
 
     # 计算1000帧以内的闭眼时长、眨眼频率、打哈欠频率
@@ -122,13 +127,13 @@ def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头�
             if COUNTER >= EYE_AR_CONSEC_FRAMES and COUNTER < EYE_sleep:  # 阈值：1-10,眨眼
                 TOTAL += 1
                 # 眨眼频率
-                eFre = TOTAL / 1000
+                eFre = TOTAL / framecounter
             # 如果连续10次都小于阈值，则表示进行了一次闭眼活动
             if COUNTER >= EYE_sleep:  # 阈值：10，闭眼
                 eTOTAL += 1
                 # 闭眼时长
                 eTime += COUNTER
-                PERCLOSE = eTime / 1000
+                PERCLOSE = eTime / framecounter
             # 重置眼帧计数器
             COUNTER = 0
 
@@ -159,7 +164,7 @@ def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头�
             if mCOUNTER >= MOUTH_AR_CONSEC_FRAMES:  # 阈值：10
                 mTOTAL += 1
                 # 打哈欠频率
-                mFre = mTOTAL / 1000
+                mFre = mTOTAL / framecounter
             # 重置嘴帧计数器
             mCOUNTER = 0
         cv2.putText(frame, "COUNTER: {}".format(mCOUNTER), (100, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
