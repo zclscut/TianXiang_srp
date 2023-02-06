@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/emotion"
+        android:icon="@mipmap/emotion_before"
+        android:title="情绪"/>
+    <item
+        android:id="@+id/fatigue"
+        android:icon="@mipmap/fatigue_before"
+        android:title="疲劳"/>
+    <item
+        android:id="@+id/posture"
+        android:icon="@drawable/posture_select"
+        android:title="坐姿"/>
+    <item
+        android:id="@+id/focus"
+        android:icon="@mipmap/focus_before"
+        android:title="专注"/>
+</menu>

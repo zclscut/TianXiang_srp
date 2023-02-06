@@ -1,0 +1,41 @@
+<resources>
+    <string name="app_name">在线学习分析系统(家长端)</string>
+    <string name="app_about">这是一个学生在线学习状态app的家长端</string>
+    <string name="app_version">version_2023.1.1</string>
+    <string name="app_about_use">
+            1.学生端和家长端的登录账号一样(parent_tel电话或parent_email邮箱),密码均由家长设置，可以不一样
+            2.如果碰到点击一次没有反应，那就多点击几次(一般点击两次即可)
+            3.目前只有id为1(student_id和parent_id)的才有查询结果，其他账号因为id非1(数据库中只有id为1的数据),所以没有结果展示
+            4.demo演示：账号fancilia20@gmail.com 密码1234567
+            5.不要点击太快(数据查询需要时间)
+            6.进入主页面后,先设置开始和结束时间(点击确认即可,“确认”默认的时间段为数据库中可查询时间范围),
+              再点击查询,查询多点几次(点击慢一点)，直到有结果显示为止
+    </string>
+    <string-array name="login_spinner_tel_email">
+        <item>电话</item>
+        <item>邮箱</item>
+    </string-array>
+    <!--    底部导航栏文字-->
+    <string name="text_button_nav_emotion">情绪</string>
+    <string name="text_button_nav_fatigue">疲劳</string>
+    <string name="text_button_nav_posture">坐姿</string>
+    <string name="text_button_nav_focus">专注</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <!--2.导航栏实现原理:底部是一个navigation bar，bar上面的内容根据点击的内容选择对应的fragment-->
+<!--    FrameLyout用于存放fragment-->
+    <FrameLayout
+        android:id="@+id/main_page_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:background="#EFEEEE"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/main_navigation_bar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="#ffffff"
+        app:itemIconTint="@color/purple_500"
+        app:itemTextColor="@color/purple_500"
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/bottom_nav_menu"/>
+
+</RelativeLayout>
+
+

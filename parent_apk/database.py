@@ -47,7 +47,6 @@ def connect():
     db = MyConf("db.ini","utf-8")  # 实例化配置文件对象，读取配置文件
 
 
-
     try:
         # db.get获取字符串，getint获取整形，getboolean获取布尔类型
         connect = pymysql.connect(host=db.get("mysql", "host"),
