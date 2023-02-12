@@ -70,7 +70,10 @@ def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头�
     # eTOTAL总闭眼次数，PERCLOSE闭眼时长占比，eTime闭眼时长
     # mCOUNTER张嘴计数器，张嘴时长过长判定为打哈欠，
     # mTOTAL打哈欠次数，mFre为打哈欠频率
-    (FATIGUEGRADE,FATIGUE,COUNTER,TOTAL,eTOTAL,PERCLOSE,mCOUNTER,mTOTAL,eTime,eFre,mFre)= datatuple
+    (FATIGUEGRADE,FATIGUE,COUNTER,TOTAL,eTOTAL,
+     PERCLOSE,mCOUNTER,mTOTAL,eTime,eFre,mFre,
+     is_blink,is_yawn,is_close)= datatuple
+    is_blink, is_yawn, is_close=0,0,0
 
     # 计算1000帧以内的闭眼时长、眨眼频率、打哈欠频率
 
@@ -126,11 +129,13 @@ def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头�
             # 如果小于阈值，则表示进行了一次眨眼活动
             if COUNTER >= EYE_AR_CONSEC_FRAMES and COUNTER < EYE_sleep:  # 阈值：1-10,眨眼
                 TOTAL += 1
+                is_blink=1
                 # 眨眼频率
                 eFre = TOTAL / framecounter
             # 如果连续10次都小于阈值，则表示进行了一次闭眼活动
             if COUNTER >= EYE_sleep:  # 阈值：10，闭眼
                 eTOTAL += 1
+                is_close=1
                 # 闭眼时长
                 eTime += COUNTER
                 PERCLOSE = eTime / framecounter
@@ -163,6 +168,7 @@ def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头�
             # 如果连续10次都小于阈值，则表示打了一次哈欠
             if mCOUNTER >= MOUTH_AR_CONSEC_FRAMES:  # 阈值：10
                 mTOTAL += 1
+                is_yawn=1
                 # 打哈欠频率
                 mFre = mTOTAL / framecounter
             # 重置嘴帧计数器
@@ -216,7 +222,10 @@ def fatigueFrameDetectDraw(datatuple,framecounter,frame):  # frame为摄像头�
 
     # 窗口显示 show with opencv
     photo = frame
-    datatuple = (FATIGUEGRADE,FATIGUE, COUNTER, TOTAL, eTOTAL, PERCLOSE, mCOUNTER, mTOTAL, eTime, eFre, mFre)
+    datatuple = (FATIGUEGRADE,FATIGUE, COUNTER,
+                 TOTAL, eTOTAL, PERCLOSE, mCOUNTER, mTOTAL,
+                 eTime, eFre, mFre,
+                 is_blink,is_yawn,is_close)
     photo = imutils.resize(photo, width=1280)#摄像头画面大小默认为1920*1280，检测缩小图片减少运算时间 ，播放再恢复原有大小
     return datatuple,photo  # 输出识别标签，已经再绘制的图片
 

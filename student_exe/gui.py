@@ -6,12 +6,11 @@ import cv2 as cv
 import numpy as np
 import datetime
 import logging
-from emotion import emotionFrameDetect as emotion_detect
 from posture import postureFrameDetectCopy as posture_detect
 from fatigue_ui import fatigueFrameDetectDraw as fatigue_detect
 from concentration import concentrationFrameDetect as concentration_detect
-from database import original_event_counter,doSql,event_insert,state_insert
-
+from database import original_event_counter,doSql,event_insert,state_insert,original_event_insert_all,study_state_insert_all
+from emotion import emotionFrameDetect as emotion_detect
 
 
 face_detector = cv.CascadeClassifier('../lib/haarcascade_frontalface_alt.xml ')
@@ -230,34 +229,39 @@ class MainCode(QMainWindow, Ui_MainWindow):
         self.camera=cv.VideoCapture(0)
         self.painter = QPainter(self)
         self.buttonFlag = 0  # 没有按钮按下
-        print('reset')
+        #print('reset')
         self.pushButton.clicked.connect(self.xflag)
         self.pushButton_2.clicked.connect(self.xflag_2)
         self.pushButton_3.clicked.connect(self.xflag_3)
         self.pushButton_4.clicked.connect(self.xflag_4)
+        self.student_id='1533848'
         self.framecounter=0
-        self.framecountermax=100#连续检测1000帧
-        self.is_blink = 0
-        self.is_yawn = 0
-        self.is_close = 0
+        self.framecountermax=30#连续检测1000帧
         self.fatiguedatatuple =(0,0,0,0,0,0,0,0,0,0,0)
-        self.scoretuple=(0,0,0,0,0)
+        self.scoretuple=(0,0,0,0)
+        self.gradetuple=(0,0,0,0)
         self.concentrationdatatuple=({'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0, 'Sad': 0, 'Surprise': 0, 'Neutral': 0, },
                                      [],[],[],[],[])
     def xflag(self):
         self.framecounter = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        print(self.buttonFlag)
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0)
+        print('按下按钮{}'.format(self.buttonFlag))
         if self.buttonFlag==0:
             self.buttonFlag=1
             #self.pushButton.setText('open1')
         else:
             self.buttonFlag=0
             #self.pushButton.setText('close')
+    #专注度分析模块要用到scoretuple，gradetuple，concentrationdatatuple
     def xflag_2(self):
         self.framecounter = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        print(self.buttonFlag)
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0)
+        self.scoretuple = (0, 0, 0, 0)
+        self.gradetuple = (0, 0, 0, 0)
+        self.concentrationdatatuple = (
+        {'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0, 'Sad': 0, 'Surprise': 0, 'Neutral': 0, },
+        [], [], [], [], [])
+        print('按下按钮{}'.format(self.buttonFlag))
         if self.buttonFlag==0:
             self.buttonFlag=2
             #self.pushButton_2.setText('open2')
@@ -266,8 +270,8 @@ class MainCode(QMainWindow, Ui_MainWindow):
             #self.pushButton_2.setText('close')
     def xflag_3(self):
         self.framecounter = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        print(self.buttonFlag)
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0)
+        print('按下按钮{}'.format(self.buttonFlag))
         if self.buttonFlag==0:
             self.buttonFlag=3
             #self.pushButton_3.setText('open3')
@@ -276,8 +280,8 @@ class MainCode(QMainWindow, Ui_MainWindow):
             #self.pushButton_3.setText('close')
     def xflag_4(self):
         self.framecounter = 0
-        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        print(self.buttonFlag)
+        self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0)
+        print('按下按钮{}'.format(self.buttonFlag))
         if self.buttonFlag==0:
             self.buttonFlag=4
             #self.pushButton_4.setText('open4')
@@ -294,10 +298,9 @@ class MainCode(QMainWindow, Ui_MainWindow):
         # 疲劳分析需要连续分析1000帧,计算1000帧以内的闭眼时长、眨眼频率、打哈欠频率
         if self.framecounter==self.framecountermax:
             self.framecounter=0
-            self.is_blink = 0
-            self.is_yawn = 0
-            self.is_close = 0
-            self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+            self.fatiguedatatuple = (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0,0,0)
+            self.scoretuple = (0, 0, 0, 0)
+            self.gradetuple = (0, 0, 0, 0)
             self.concentrationdatatuple=({'Angry': 0, 'Hate': 0, 'Fear': 0, 'Happy': 0, 'Sad': 0, 'Surprise': 0, 'Neutral': 0, },
                                      [],[],[],[],[])
         # 按下情绪识别按钮
@@ -306,7 +309,7 @@ class MainCode(QMainWindow, Ui_MainWindow):
             emoFlag, photo = emotion_detect(rect, roi_gray, frame)  # 输入灰度图，输出情绪类别标签emoFlag，并输出情绪识别后用文字标签后的图片
             self.QImage=QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
 
-            event_insert('13423', 'emotion', emoFlag, 2)
+            event_insert(self.student_id, 'emotion', emoFlag, 2)
 
             #log.info("The user zcl write to the database sucessfully")
             #logging.info("the original_event=emotion,original_value={}".format(emoFlag))
@@ -316,12 +319,12 @@ class MainCode(QMainWindow, Ui_MainWindow):
                 posture_detect(frame, frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
 
-            state_insert('13423','posture', headPosture, 2)
+            state_insert(self.student_id,'posture', headPosture, 2)
 
-            event_insert('13423', 'is_z_gap', is_z_gap, 2)
-            event_insert('13423', 'is_y_gap_sh', is_y_gap_sh, 2)
-            event_insert('13423', 'is_y_head_gap', is_y_head_gap, 2)
-            event_insert('13423', 'is_per', is_per, 2)
+            event_insert(self.student_id, 'is_z_gap', is_z_gap, 2)
+            event_insert(self.student_id, 'is_y_gap_sh', is_y_gap_sh, 2)
+            event_insert(self.student_id, 'is_y_head_gap', is_y_head_gap, 2)
+            event_insert(self.student_id, 'is_per', is_per, 2)
             # log.info("The user zcl write to the database successfully")
             #logging.info("the original_event=posture,original_value={}".format(3))
 
@@ -331,28 +334,45 @@ class MainCode(QMainWindow, Ui_MainWindow):
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
 
             #如果累计参数+1,则数据库插入1;若累计参数不变，则数据库插入0
-            self.is_blink=self.fatiguedatatuple[3]-self.is_blink
-            self.is_yawn=self.fatiguedatatuple[3]-self.is_yawn
-            self.is_close=self.fatiguedatatuple[3]-self.is_close
-            event_insert('13423', 'is_blink', self.is_blink, 2)
-            event_insert('13423', 'is_yawn', self.is_yawn, 2)
-            event_insert('13423', 'is_close', self.is_close, 2)
+            is_blink=self.fatiguedatatuple[11]
+            is_yawn=self.fatiguedatatuple[12]
+            is_close=self.fatiguedatatuple[13]
+            event_insert(self.student_id, 'is_blink', is_blink, 2)
+            event_insert(self.student_id, 'is_yawn', is_yawn, 2)
+            event_insert(self.student_id, 'is_close', is_close, 2)
 
             #累计统计framecountermax帧后，输出的疲劳值才是准确值,否则小于真实疲劳值
             if self.framecounter==self.framecountermax-1:
                 print('疲劳程度为{}'.format(self.fatiguedatatuple[0]))
-                state_insert('13423', 'focus', self.fatiguedatatuple[0], 2)
+                state_insert(self.student_id, 'fatigue', self.fatiguedatatuple[0], 2)
 
             # log.info("The user zcl write to the database successfully")
             # logging.info("the original_event=fatigue,original_value={}".format(3))
         # 按下专注度分析按钮
         elif self.buttonFlag==2:
-            self.scoretuple,self.fatiguedatatuple,photo=\
-                concentration_detect(self.concentrationdatatuple,self.scoretuple,
-                                     self.fatiguedatatuple,self.framecounter,
+            self.concentrationdatatuple,self.fatiguedatatuple,\
+            self.scoretuple,self.gradetuple,eventtuple,photo=\
+                concentration_detect(self.concentrationdatatuple,self.fatiguedatatuple,
+                                     self.scoretuple,self.gradetuple,
+                                     self.framecounter,
                                      self.framecountermax,frame)
             self.QImage = QImage(photo.data, photo.shape[1], photo.shape[0], photo.shape[1] * 3, QImage.Format_RGB888)
 
+            (emoFlag, is_pitch, is_yaw, is_roll,
+             is_z_gap, is_y_gap_sh,is_y_head_gap, is_per,
+             is_blink,is_yawn,is_close)=eventtuple
+            original_event_insert_all(self.student_id, emoFlag, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
+                                  is_y_head_gap, is_per, is_blink,is_yawn,is_close)
+            # 累计统计framecountermax帧后，输出的疲劳值才是准确值,否则小于真实疲劳值
+            if self.framecounter == self.framecountermax - 1:
+                (emotion_grade,fatigue_grade,posture_grade,focus_grade)=self.gradetuple
+                (posture_score, emotion_score,fatigue_score, focus_score) = self.scoretuple
+                print('情绪消极程度为{},评分为{}'.format(emotion_grade,emotion_score))
+                print('疲劳程度为{},评分为{}'.format(fatigue_grade,fatigue_score))
+                print('姿势错误度为{},评分为{}'.format(posture_grade,posture_score))
+                print('专注程度为{},评分为{}'.format(focus_grade,focus_score))
+                # 每个周期插入数据
+                study_state_insert_all(self.student_id, emotion_grade, fatigue_grade, posture_grade, focus_grade)
             # log.info("The user zcl write to the database successfully")
             # logging.info("the original_event=concentration,original_value={}".format(3))
         else:

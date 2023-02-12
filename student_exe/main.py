@@ -175,7 +175,7 @@ if __name__ == '__main__':
             emotion_sort=emoFlag
 
             # 插入原始数据
-            # original_event_insert(student_id, emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
+            # original_event_insert_all(student_id, emotion_sort, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
             #                       is_y_head_gap, is_per, is_blink,is_yawn,is_close)
 
         if frame_counter == period_frames:  # 一个计数周期结束

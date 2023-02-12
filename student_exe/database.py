@@ -112,7 +112,7 @@ def original_event_counter(): # original_event的counter查询
         counter =result[0][0][0]
     else:
         counter = 0
-    log.info('After querying,the length of original_event table equals {}'.format(counter))
+    #log.info('After querying,the length of original_event table equals {}'.format(counter))
     return counter
 
 def study_state_counter(): # study_state的counter查询

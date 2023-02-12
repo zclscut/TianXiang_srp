@@ -98,7 +98,7 @@ def faceDetectorVideo(img):
     faces = face_detector.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=10)
     #caleFactor=1.1, minNeighbors=10执行时间110ms
     #caleFactor=1.3, minNeighbors=10执行时间40ms
-    print(time.time() - t)#测试执行时间
+    print('检测人脸用时{:.4f}s'.format(time.time() - t))#测试执行时间
     # 没检测到人脸
     if faces == ():
         return (0, 0, 0, 0), np.zeros((48, 48), np.uint8), img

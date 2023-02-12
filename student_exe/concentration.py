@@ -11,6 +11,7 @@ from emotion import emotionFrameDetect as emotion_detect
 from emotion import faceDetectorVideo as face_detect
 from emotion import emotion_dic
 from fatigue_ui import fatigueFrameDetectDraw as fatigue_detect
+from posture import postureFrameDetectCopy as posture_detect
 
 # 模型初始化
 # t0=time.time()
@@ -186,9 +187,10 @@ def get_focus_score(head_pose_score, emotion_score, fatigue_score):
     return round(focus_score, 2),focus_grade
 
 #UI调用该函数，请不要删除————钟楚龙
-def concentrationFrameDetect(concentrationdatatuple,scoretuple,fatiguedatatuple,framecounter,framecountermax,frame):
+def concentrationFrameDetect(concentrationdatatuple,fatiguedatatuple,scoretuple,gradetuple,framecounter,framecountermax,frame):
     (head_pose_score, emotion_score,
-     fatigue_score, focus_score, focus_grade)=scoretuple
+     fatigue_score, focus_score)=scoretuple
+    (emotion_grade, fatigue_grade, posture_grade, focus_grade)=gradetuple
     (emotion_times_dict, fatigue_lst,
      fatigue_grade_lst, pitch_lst,
      yaw_lst, roll_lst) = concentrationdatatuple
@@ -217,7 +219,8 @@ def concentrationFrameDetect(concentrationdatatuple,scoretuple,fatiguedatatuple,
 
         # 专注度得分
         focus_score, focus_grade = get_focus_score(head_pose_score, emotion_score, fatigue_score)
-        scoretuple = (head_pose_score, emotion_score, fatigue_score, focus_score, focus_grade)
+        scoretuple = (head_pose_score, emotion_score,fatigue_score, focus_score)
+        gradetuple=(emotion_grade, fatigue_grade, posture_grade, focus_grade)
 
     # --------表情模块模块-----------
     #识别情绪，对应情绪类别频次+1
@@ -229,6 +232,12 @@ def concentrationFrameDetect(concentrationdatatuple,scoretuple,fatiguedatatuple,
     fatiguedatatuple=fatigue_detect(fatiguedatatuple, framecounter, frame)[0]
     fatigue_lst.append(fatiguedatatuple[1])#即疲劳分析的fatigue
     fatigue_grade_lst.append(fatiguedatatuple[0])#即疲劳分析的fatigue_grade
+    (is_blink,is_yawn,is_close)=fatiguedatatuple[11:14]
+
+    # --------疲劳度模块------------
+    is_z_gap, is_y_gap_sh, is_y_head_gap, is_per, isPosture, headPosture, photo = \
+        posture_detect(frame, frame)
+
 
     # --------专注度模块-----------
     pitch, yaw, roll, is_pitch, is_yaw, is_roll, photo = get_euler_angle(frame)
@@ -257,8 +266,10 @@ def concentrationFrameDetect(concentrationdatatuple,scoretuple,fatiguedatatuple,
     cv2.putText(photo, "framecounter: {}".format(framecounter), (text_x, text_y+40*5),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2)
 
+    eventtuple=(emoFlag, is_pitch, is_yaw, is_roll, is_z_gap, is_y_gap_sh,
+                is_y_head_gap, is_per, is_blink,is_yawn,is_close)
 
-    return scoretuple,fatiguedatatuple,photo
+    return concentrationdatatuple, fatiguedatatuple, scoretuple, gradetuple, eventtuple, photo
 
 if __name__ == '__main__':
     cap = cv2.VideoCapture(0)
