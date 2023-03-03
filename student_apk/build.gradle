@@ -2,4 +2,19 @@
 plugins {
     id 'com.android.application' version '7.3.1' apply false
     id 'com.android.library' version '7.3.1' apply false
+    //id 'com.chaquo.python' version '14.0.2' apply false
+}
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        // 设置仓库
+        maven { url "https://chaquo.com/maven" }
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.1'
+        // 导入Chaquopy框架的包
+        classpath "com.chaquo.python:gradle:6.3.0"
+    }
 }
