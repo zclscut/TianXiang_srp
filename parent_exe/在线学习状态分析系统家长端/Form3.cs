@@ -54,21 +54,20 @@ namespace 在线学习状态分析系统家长端
             }
             try
             {
-                string sql0 = string.Format("select count(*) from student_info where student_id='{0}'", studentID.Text);
+                string sql0 = string.Format("select * from student_info where student_id='{0}'", studentID.Text);
                 MySqlCommand cmd0 = new MySqlCommand(sql0, conn);
                 conn.Open();
-                Int64 a0 = (Int64)cmd0.ExecuteScalar();//返回一个值，看学生ID是否存在
-                if(a0 == 0)
+                if(cmd0.ExecuteScalar()==null)
                 {
+                    MessageBox.Show("不存在该学生Id!");
                     return;
                 }
                 conn.Close();
-                string sql = string.Format("select count(*) from parent_info where parent_tel='{0}'", phoneNumber.Text);
+                string sql = string.Format("select * from parent_info where parent_tel='{0}'", phoneNumber.Text);
                 MySqlCommand cmd = new MySqlCommand(sql,conn);
                 conn.Open();
-                Int64 a = (Int64)cmd.ExecuteScalar();//返回一个值，看用户是否存在
                 StringBuilder strsql = new StringBuilder();
-                if (a == 0)
+                if (cmd.ExecuteScalar() == null)
                 {
                     strsql.Append("insert into parent_info(`parent_id`,`parent_name`,`parent_sex`,`parent_tel`,`parent_email`,`parent_pswd`,`student_id`)");
                     strsql.Append("values(0,");
@@ -89,7 +88,7 @@ namespace 在线学习状态分析系统家长端
                 else
                 {
                     MessageBox.Show("用户已存在！", "信息提示", MessageBoxButtons.OK, MessageBoxIcon.Asterisk);
-                    this.Close();
+                    return;
                 }
             }
             catch (Exception ex)

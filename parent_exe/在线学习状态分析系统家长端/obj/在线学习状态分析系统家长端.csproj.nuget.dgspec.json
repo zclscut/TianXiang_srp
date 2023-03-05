@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\C＃\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj": {}
+    "D:\\parent_exe\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj": {}
   },
   "projects": {
-    "D:\\C＃\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj": {
+    "D:\\parent_exe\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\C＃\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj",
+        "projectUniqueName": "D:\\parent_exe\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj",
         "projectName": "在线学习状态分析系统家长端",
-        "projectPath": "D:\\C＃\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj",
+        "projectPath": "D:\\parent_exe\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端.csproj",
         "packagesPath": "C:\\Users\\Administrator\\.nuget\\packages\\",
-        "outputPath": "D:\\C＃\\在线学习状态分析系统家长端\\在线学习状态分析系统家长端\\obj\\",
+        "outputPath": "D:\\parent_exe\\在线学习状态分析系统家长端\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "D:\\VS shared\\NuGetPackages"
+          "E:\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
           "C:\\Users\\Administrator\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -22,7 +22,7 @@
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
-          "net6.0-windows7.0"
+          "net6.0-windows"
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
@@ -63,7 +63,8 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -75,7 +76,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.301\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

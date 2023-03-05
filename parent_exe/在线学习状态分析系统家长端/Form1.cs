@@ -1,5 +1,7 @@
 using MySqlConnector;
 using System.Data;
+using static 在线学习状态分析系统家长端.globalVariable;
+
 namespace 在线学习状态分析系统家长端
 {
     public partial class Form1 : Form
@@ -25,22 +27,28 @@ namespace 在线学习状态分析系统家长端
             MySqlConnection conn = new MySqlConnection(conString);
 
             conn.Open();
-            string sql = "select count(1) from parent_info where parent_tel=@t1 and parent_pswd=@t2 ";
+            string sql = "select * from parent_info where parent_tel=@t1 and parent_pswd=@t2 ";
             //通过Connection对象和sql语句，创建Command对象
             MySqlCommand cmd = new MySqlCommand(sql, conn);
             //处理Command对象的参数
             cmd.Parameters.Add("@t1", MySqlDbType.VarChar).Value = userName;
             cmd.Parameters.Add("@t2", MySqlDbType.VarChar).Value = userPwd;
-
             //执行SQL语句
-            if ((Int64)cmd.ExecuteScalar() > 0)
+            if (cmd.ExecuteScalar() !=null)
             {
-                Form2 Form2 = new Form2();
+                MySqlDataReader reader = cmd.ExecuteReader();
+                reader.Read();
+                loginInfo.parentName = reader["parent_name"].ToString();
+                loginInfo.studentId = Convert.ToInt32(reader["student_id"]);
+                reader.Close();
+                Form2 查询 = new Form2();
+                this.Hide();
                 userName = phoneNumber.Text;
                 userPwd = passWord.Text;
-                Form2.Show();//登录成功显示的下一个页面
                 MessageBox.Show("欢迎进入！", "登陆成功！", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                // this.Hide(); //查到数据的处理逻辑代码
+                查询.ShowDialog();//登录成功显示的下一个页面
+                Application.ExitThread();
+                //查到数据的处理逻辑代码
             }
             else
             {

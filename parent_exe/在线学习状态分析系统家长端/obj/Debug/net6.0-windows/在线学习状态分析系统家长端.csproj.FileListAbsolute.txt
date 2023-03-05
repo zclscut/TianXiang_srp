@@ -26,3 +26,59 @@ D:\C＃\在线学习状态分析系统家长端\在线学习状态分析系统�
 D:\C＃\在线学习状态分析系统家长端\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form2.resources
 D:\C＃\在线学习状态分析系统家长端\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form3.resources
 D:\C＃\在线学习状态分析系统家长端\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form4.resources
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.AssemblyReference.cache
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form1.resources
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form2.resources
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form3.resources
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form4.resources
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.GenerateResource.cache
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.GeneratedMSBuildEditorConfig.editorconfig
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.AssemblyInfoInputs.cache
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.AssemblyInfo.cs
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.CoreCompileInputs.cache
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\refint\在线学习状态分析系统家长端.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.pdb
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.exe
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.deps.json
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.runtimeconfig.json
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.pdb
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\MySqlConnector.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\System.Data.SqlClient.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win-arm64\native\sni.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win-x64\native\sni.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win-x86\native\sni.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.CopyComplete
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.genruntimeconfig.cache
+D:\TianXiang_srp\parent_C#\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\ref\在线学习状态分析系统家长端.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.exe
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.deps.json
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.runtimeconfig.json
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.pdb
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\MySqlConnector.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\System.Data.SqlClient.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win-arm64\native\sni.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win-x64\native\sni.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win-x86\native\sni.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.AssemblyReference.cache
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form1.resources
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form2.resources
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form3.resources
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.Form4.resources
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.GenerateResource.cache
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.GeneratedMSBuildEditorConfig.editorconfig
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.AssemblyInfoInputs.cache
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.AssemblyInfo.cs
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.CoreCompileInputs.cache
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.csproj.CopyComplete
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\refint\在线学习状态分析系统家长端.dll
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.pdb
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\在线学习状态分析系统家长端.genruntimeconfig.cache
+D:\TianXiang_srp\parent_exe\在线学习状态分析系统家长端\obj\Debug\net6.0-windows\ref\在线学习状态分析系统家长端.dll

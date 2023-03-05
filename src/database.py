@@ -28,7 +28,7 @@ def initialize_database():
     # print(listdata)# 数组
     if ('online_learning',) not in listdata:
         # 不存在online_learning库,进行数据库的初始化操作
-        with open('../lib/online_learning.sql', 'r+') as f:  # 对sql文件分行
+        with open('../lib/online_learning.sql', 'r+',encoding='utf-8') as f:  # 对sql文件分行
             sql_list = f.read().split(';')[:-1]  # sql文件最后一行加上;
             sql_list = [x.replace('\n', ' ') if '\n' in x else x for x in sql_list]  # 将每段sql里的换行符改成空格
             # print(sql_list)
