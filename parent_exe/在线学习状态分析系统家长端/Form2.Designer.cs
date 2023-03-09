@@ -212,6 +212,7 @@
             result.Location = new Point(310, 272);
             result.Multiline = true;
             result.Name = "result";
+            result.ScrollBars = ScrollBars.Vertical;
             result.Size = new Size(515, 319);
             result.TabIndex = 9;
             // 
@@ -238,6 +239,7 @@
             Controls.Add(dateTime1);
             Controls.Add(label1);
             Name = "Form2";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = ".";
             ResumeLayout(false);
             PerformLayout();

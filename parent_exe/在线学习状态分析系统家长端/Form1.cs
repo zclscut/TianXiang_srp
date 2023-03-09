@@ -1,5 +1,7 @@
 using MySqlConnector;
+using Python.Runtime;
 using System.Data;
+using System.Diagnostics;
 using static 在线学习状态分析系统家长端.globalVariable;
 
 namespace 在线学习状态分析系统家长端
@@ -18,14 +20,22 @@ namespace 在线学习状态分析系统家长端
 
         private void button1_Click(object sender, EventArgs e)
         {
-            //获取界面上用户输入信息
+            string pyexePath = "database.exe";
+            Process p = new Process();
+            p.StartInfo.FileName = pyexePath;//需要执行的文件路径
+            p.StartInfo.UseShellExecute = false; //必需
+            p.StartInfo.RedirectStandardOutput = true;//输出参数设定
+            p.StartInfo.RedirectStandardInput = false;//传入参数设定
+            p.StartInfo.CreateNoWindow = true;
+            p.Start();
+            string connstring = p.StandardOutput.ReadToEnd();
+            p.WaitForExit();//关键，等待外部程序退出后才能往下执行}
+            p.Close();
+
+            MySqlConnection conn = new MySqlConnection(connstring);
+
             string userName = phoneNumber.Text;
             string userPwd = passWord.Text;
-            //数据库字符串
-            string conString = "data source=127.0.0.1; Database=online_learning;user id=root; password=123456; charset=utf8";
-
-            MySqlConnection conn = new MySqlConnection(conString);
-
             conn.Open();
             string sql = "select * from parent_info where parent_tel=@t1 and parent_pswd=@t2 ";
             //通过Connection对象和sql语句，创建Command对象

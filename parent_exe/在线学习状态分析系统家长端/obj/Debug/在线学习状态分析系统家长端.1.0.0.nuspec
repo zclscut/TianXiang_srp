@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>在线学习状态分析系统家长端</id>
+    <version>1.0.0</version>
+    <authors>在线学习状态分析系统家长端</authors>
+    <description>Package Description</description>
+    <dependencies>
+      <group targetFramework="net6.0-windows7.0">
+        <dependency id="IronPython" version="3.4.0" exclude="Build,Analyzers" />
+        <dependency id="MySqlConnector" version="2.2.5" exclude="Build,Analyzers" />
+        <dependency id="System.Data.SqlClient" version="4.8.5" exclude="Build,Analyzers" />
+        <dependency id="System.Runtime" version="4.3.1" exclude="Build,Analyzers" />
+        <dependency id="pythonnet" version="3.0.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net6.0-windows7.0">
+        <frameworkReference name="Microsoft.WindowsDesktop.App.WindowsForms" />
+      </group>
+    </frameworkReferences>
+  </metadata>
+  <files>
+    <file src="D:\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.runtimeconfig.json" target="lib\net6.0-windows7.0\在线学习状态分析系统家长端.runtimeconfig.json" />
+    <file src="D:\parent_exe\在线学习状态分析系统家长端\bin\Debug\net6.0-windows\在线学习状态分析系统家长端.dll" target="lib\net6.0-windows7.0\在线学习状态分析系统家长端.dll" />
+  </files>
+</package>

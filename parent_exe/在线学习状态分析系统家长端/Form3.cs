@@ -1,4 +1,6 @@
-﻿using MySqlConnector;
+﻿using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
+using MySqlConnector;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace 在线学习状态分析系统家长端
 {
@@ -17,7 +20,6 @@ namespace 在线学习状态分析系统家长端
         {
             InitializeComponent();
         }
-        private MySqlConnection conn = new MySqlConnection("data source=127.0.0.1; Database=online_learning;user id=root; password=123456; charset=utf8");
 
         private string parentSex="man";
         private void button1_Click(object sender, EventArgs e)
@@ -30,6 +32,21 @@ namespace 在线学习状态分析系统家长端
 
         private void button2_Click(object sender, EventArgs e)
         {
+            string pyexePath = "database.exe";
+            Process p = new Process();
+            p.StartInfo.FileName = pyexePath;//需要执行的文件路径
+            p.StartInfo.UseShellExecute = false; //必需
+            p.StartInfo.RedirectStandardOutput = true;//输出参数设定
+            p.StartInfo.RedirectStandardInput = true;//传入参数设定
+            p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.Arguments = "";//参数以空格分隔，如果某个参数为空，可以传入””
+            p.Start();
+            string connstring = p.StandardOutput.ReadToEnd();
+            p.WaitForExit();//关键，等待外部程序退出后才能往下执行}
+            p.Close();
+
+            MySqlConnection conn = new MySqlConnection(connstring);
+
             if (phoneNumber.Text == "")
             {
                 MessageBox.Show("手机号不能为空！");

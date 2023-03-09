@@ -1,2 +1,0 @@
-Thu, 02 Feb 2023 16:42:55 database.py[line:67] INFO: connecting to the database 101.33.198.88:3306 sucessfully
-Thu, 02 Feb 2023 16:42:55 database.py[line:68] INFO: <pymysql.connections.Connection object at 0x000001E5DF9103A0>
