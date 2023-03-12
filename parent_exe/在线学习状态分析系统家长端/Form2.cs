@@ -21,12 +21,14 @@ namespace 在线学习状态分析系统家长端
         public Form2()
         {
             InitializeComponent();
-            parName.Text = loginInfo.parentName;
-            stuId.Text = loginInfo.studentId.ToString();
+            toolStripStatusLabel1.Text = "家长姓名："+loginInfo.parentName;
+            toolStripStatusLabel2.Text = "学生ID："+loginInfo.studentId.ToString();
             int emocount;
             int faticount;
             int poscount;
             int foccount;
+            this.ControlBox = true;
+            this.MaximizeBox = false;
         }
 
 
@@ -37,7 +39,6 @@ namespace 在线学习状态分析系统家长端
 
         private void button1_Click(object sender, EventArgs e)
         {
-            result.Text = string.Empty;
             string pyexePath = "database.exe";
             Process p = new Process();
             p.StartInfo.FileName = pyexePath;//需要执行的文件路径
@@ -61,6 +62,7 @@ namespace 在线学习状态分析系统家长端
             MySqlCommand cmd0 = new MySqlCommand(sql0, conn);
             conn.Open();
             MySqlDataReader reader = cmd0.ExecuteReader();
+            dataGridView1.Rows.Clear();
             while (reader.Read())
             {
                 if (dateTime1.Value <= Convert.ToDateTime(reader["record_time"]))
@@ -72,20 +74,22 @@ namespace 在线学习状态分析系统家长端
                             case "1":
                                 if (emotion.Checked)
                                 {
+                                    int index = this.dataGridView1.Rows.Add();
+                                    this.dataGridView1.Rows[index].Cells[0].Value = "情绪分析";
                                     emocount++;
                                     switch (reader["state_value"])
                                     {
                                         case "1":
-                                            Label = "情绪 积极 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "积极";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "2":
-                                            Label = "情绪 中性 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "中性";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "3":
-                                            Label = "情绪 消极 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "消极";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                     }
                                 }
@@ -93,28 +97,30 @@ namespace 在线学习状态分析系统家长端
                             case "2":
                                 if (fatigue.Checked)
                                 {
+                                    int index = this.dataGridView1.Rows.Add();
+                                    this.dataGridView1.Rows[index].Cells[0].Value = "疲劳度分析";
                                     faticount++;
                                     switch (reader["state_value"])
                                     {
                                         case "1":
-                                            Label = "清醒 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "清醒";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "2":
-                                            Label = "临界状态 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "临界状态";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "3":
-                                            Label = "轻度疲劳 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "轻度疲劳";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "4":
-                                            Label = "中度疲劳 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "中度疲劳";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "5":
-                                            Label = "重度疲劳 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "重度疲劳";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                     }
                                 }
@@ -122,24 +128,26 @@ namespace 在线学习状态分析系统家长端
                             case "3":
                                 if (posture.Checked)
                                 {
+                                    int index = this.dataGridView1.Rows.Add();
+                                    this.dataGridView1.Rows[index].Cells[0].Value = "坐姿分析";
                                     poscount++;
                                     switch (reader["state_value"])
                                     {
                                         case "1":
-                                            Label = "坐姿正常 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "坐姿正常";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "2":
-                                            Label = "脸部朝前的颈部前倾 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "脸部朝前的颈部前倾";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "3":
-                                            Label = "脸部朝下的颈部前倾 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "脸部朝下的颈部前倾";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "4":
-                                            Label = "脊椎左右倾斜 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "脊椎左右倾斜";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                     }
                                 }
@@ -147,24 +155,26 @@ namespace 在线学习状态分析系统家长端
                             case "4":
                                 if (focus.Checked)
                                 {
+                                    int index = this.dataGridView1.Rows.Add();
+                                    this.dataGridView1.Rows[index].Cells[0].Value = "专注度分析";
                                     foccount++;
                                     switch (reader["state_value"])
                                     {
                                         case "1":
-                                            Label = "极其专注 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "极其专注";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "2":
-                                            Label = "专注 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "专注";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "3":
-                                            Label = "不专注 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "不专注";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                         case "4":
-                                            Label = "极不专注 于" + reader["record_time"].ToString() + "\r\n";
-                                            result.AppendText(Label);
+                                            this.dataGridView1.Rows[index].Cells[1].Value = "极不专注";
+                                            this.dataGridView1.Rows[index].Cells[2].Value = reader["record_time"].ToString();
                                             break;
                                     }
                                 }
@@ -173,11 +183,15 @@ namespace 在线学习状态分析系统家长端
                     }
                 }
             }
-            result.AppendText("查询结束\r\n");
             conn.Close();
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }

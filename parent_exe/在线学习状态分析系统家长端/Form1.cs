@@ -11,6 +11,8 @@ namespace 在线学习状态分析系统家长端
         public Form1()
         {
             InitializeComponent();
+            this.ControlBox = true;
+            this.MaximizeBox = false;
         }
 
         private void Form1_Load_1(object sender, EventArgs e)
@@ -44,7 +46,7 @@ namespace 在线学习状态分析系统家长端
             cmd.Parameters.Add("@t1", MySqlDbType.VarChar).Value = userName;
             cmd.Parameters.Add("@t2", MySqlDbType.VarChar).Value = userPwd;
             //执行SQL语句
-            if (cmd.ExecuteScalar() !=null)
+            if (cmd.ExecuteScalar() != null)
             {
                 MySqlDataReader reader = cmd.ExecuteReader();
                 reader.Read();

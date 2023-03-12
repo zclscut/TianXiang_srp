@@ -40,11 +40,15 @@
             focus = new CheckBox();
             button1 = new Button();
             label5 = new Label();
-            label8 = new Label();
-            label6 = new Label();
-            stuId = new Label();
-            parName = new Label();
-            result = new TextBox();
+            dataGridView1 = new DataGridView();
+            Column1 = new DataGridViewTextBoxColumn();
+            Column2 = new DataGridViewTextBoxColumn();
+            Column3 = new DataGridViewTextBoxColumn();
+            statusStrip1 = new StatusStrip();
+            toolStripStatusLabel1 = new ToolStripStatusLabel();
+            toolStripStatusLabel2 = new ToolStripStatusLabel();
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            statusStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // label1
@@ -167,65 +171,70 @@
             label5.TabIndex = 7;
             label5.Text = "查询结果";
             // 
-            // label8
+            // dataGridView1
             // 
-            label8.AutoSize = true;
-            label8.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            label8.Location = new Point(46, 46);
-            label8.Name = "label8";
-            label8.Size = new Size(48, 23);
-            label8.TabIndex = 8;
-            label8.Text = "家长:";
+            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            dataGridView1.Columns.AddRange(new DataGridViewColumn[] { Column1, Column2, Column3 });
+            dataGridView1.Location = new Point(310, 272);
+            dataGridView1.Name = "dataGridView1";
+            dataGridView1.RowHeadersWidth = 51;
+            dataGridView1.RowTemplate.Height = 29;
+            dataGridView1.Size = new Size(502, 319);
+            dataGridView1.TabIndex = 10;
+            dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             // 
-            // label6
+            // Column1
             // 
-            label6.AutoSize = true;
-            label6.Font = new Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            label6.Location = new Point(36, 75);
-            label6.Name = "label6";
-            label6.Size = new Size(68, 20);
-            label6.TabIndex = 8;
-            label6.Text = "学生id：";
+            Column1.HeaderText = "类别";
+            Column1.MinimumWidth = 6;
+            Column1.Name = "Column1";
+            Column1.ReadOnly = true;
+            Column1.Resizable = DataGridViewTriState.False;
+            Column1.Width = 90;
             // 
-            // stuId
+            // Column2
             // 
-            stuId.AutoSize = true;
-            stuId.Font = new Font("Microsoft YaHei UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            stuId.Location = new Point(95, 75);
-            stuId.Name = "stuId";
-            stuId.Size = new Size(18, 20);
-            stuId.TabIndex = 8;
-            stuId.Text = "0";
+            Column2.HeaderText = "事件";
+            Column2.MinimumWidth = 6;
+            Column2.Name = "Column2";
+            Column2.Width = 150;
             // 
-            // parName
+            // Column3
             // 
-            parName.AutoSize = true;
-            parName.Font = new Font("Microsoft YaHei UI", 10F, FontStyle.Regular, GraphicsUnit.Point);
-            parName.Location = new Point(95, 46);
-            parName.Name = "parName";
-            parName.Size = new Size(44, 23);
-            parName.TabIndex = 8;
-            parName.Text = "家长";
+            Column3.HeaderText = "时间";
+            Column3.MinimumWidth = 6;
+            Column3.Name = "Column3";
+            Column3.Width = 210;
             // 
-            // result
+            // statusStrip1
             // 
-            result.Location = new Point(310, 272);
-            result.Multiline = true;
-            result.Name = "result";
-            result.ScrollBars = ScrollBars.Vertical;
-            result.Size = new Size(515, 319);
-            result.TabIndex = 9;
+            statusStrip1.ImageScalingSize = new Size(20, 20);
+            statusStrip1.Items.AddRange(new ToolStripItem[] { toolStripStatusLabel1, toolStripStatusLabel2 });
+            statusStrip1.Location = new Point(0, 590);
+            statusStrip1.Name = "statusStrip1";
+            statusStrip1.Size = new Size(1155, 26);
+            statusStrip1.TabIndex = 11;
+            statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            toolStripStatusLabel1.Size = new Size(167, 20);
+            toolStripStatusLabel1.Text = "toolStripStatusLabel1";
+            // 
+            // toolStripStatusLabel2
+            // 
+            toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            toolStripStatusLabel2.Size = new Size(167, 20);
+            toolStripStatusLabel2.Text = "toolStripStatusLabel2";
             // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1155, 616);
-            Controls.Add(result);
-            Controls.Add(stuId);
-            Controls.Add(label6);
-            Controls.Add(parName);
-            Controls.Add(label8);
+            Controls.Add(statusStrip1);
+            Controls.Add(dataGridView1);
             Controls.Add(label5);
             Controls.Add(button1);
             Controls.Add(focus);
@@ -238,9 +247,13 @@
             Controls.Add(dateTime2);
             Controls.Add(dateTime1);
             Controls.Add(label1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "Form2";
             StartPosition = FormStartPosition.CenterScreen;
             Text = ".";
+            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            statusStrip1.ResumeLayout(false);
+            statusStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -259,10 +272,12 @@
         private CheckBox focus;
         private Button button1;
         private Label label5;
-        private Label label8;
-        private Label label6;
-        private Label stuId;
-        private Label parName;
-        private TextBox result;
+        private DataGridView dataGridView1;
+        private DataGridViewTextBoxColumn Column1;
+        private DataGridViewTextBoxColumn Column2;
+        private DataGridViewTextBoxColumn Column3;
+        private StatusStrip statusStrip1;
+        private ToolStripStatusLabel toolStripStatusLabel1;
+        private ToolStripStatusLabel toolStripStatusLabel2;
     }
 }

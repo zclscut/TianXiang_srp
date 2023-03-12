@@ -19,9 +19,11 @@ namespace 在线学习状态分析系统家长端
         public Form3()
         {
             InitializeComponent();
+            this.ControlBox = true;
+            this.MaximizeBox = false;
         }
 
-        private string parentSex="man";
+        private string parentSex = "man";
         private void button1_Click(object sender, EventArgs e)
         {
             Form1 登录 = new Form1();//想要打开的窗体界面
@@ -74,14 +76,14 @@ namespace 在线学习状态分析系统家长端
                 string sql0 = string.Format("select * from student_info where student_id='{0}'", studentID.Text);
                 MySqlCommand cmd0 = new MySqlCommand(sql0, conn);
                 conn.Open();
-                if(cmd0.ExecuteScalar()==null)
+                if (cmd0.ExecuteScalar() == null)
                 {
                     MessageBox.Show("不存在该学生Id!");
                     return;
                 }
                 conn.Close();
                 string sql = string.Format("select * from parent_info where parent_tel='{0}'", phoneNumber.Text);
-                MySqlCommand cmd = new MySqlCommand(sql,conn);
+                MySqlCommand cmd = new MySqlCommand(sql, conn);
                 conn.Open();
                 StringBuilder strsql = new StringBuilder();
                 if (cmd.ExecuteScalar() == null)
@@ -95,7 +97,7 @@ namespace 在线学习状态分析系统家长端
                     strsql.Append("'" + passWord1.Text.Trim().ToString() + "',");
                     strsql.Append("'" + studentID.Text.Trim().ToString() + "'");
                     strsql.Append(")");
-                    using (MySqlCommand cmd2 = new MySqlCommand(strsql.ToString(),conn))
+                    using (MySqlCommand cmd2 = new MySqlCommand(strsql.ToString(), conn))
                     {
                         cmd2.ExecuteNonQuery();
                     }
